@@ -1,0 +1,10 @@
+* Tyr-Gin
+** Why?
+The purpose of this is to centralize some features common to a gin service 
+that we might use in our microservices. This way each microservice does not 
+need to re-implement features. Such as jwt functions, logging and etc.
+** Features
+1. Logging
+2. JWT
+3. Easy way to add endpoints.
+
