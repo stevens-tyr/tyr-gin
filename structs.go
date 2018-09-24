@@ -1,5 +1,9 @@
 package tyrgin
 
+import (
+	"github.com/gin-gonic/gin"
+)
+
 // Creator Types
 
 // The http type is a type for HTTP request types.

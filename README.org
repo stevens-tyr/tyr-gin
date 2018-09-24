@@ -7,4 +7,3 @@ need to re-implement features. Such as jwt functions, logging and etc.
 1. Logging
 2. JWT
 3. Easy way to add endpoints.
-
