@@ -7,3 +7,16 @@ need to re-implement features. Such as jwt functions, logging and etc.
 1. Logging
 2. JWT
 3. Easy way to add endpoints.
+** Contributing
+1. Clone the repository locally, and create a new branch.
+2. Run *go get*.
+3. Run *go get golang.org/x/tools/cmd/goimports*.
+4. Make your changes.
+5. Run make all to fmt, lint, and test code.
+6. Make a merge request.
+** Todo
+1. Add testing(ci if I can figure out how gitlab works with that).
+2. Add Implementation of jwt.
+3. Add mongodb connection.
+4. Add logging levels.
+5. Check environment variables for log level.
