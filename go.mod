@@ -1,4 +1,4 @@
-module /github.com/stevens-tyr/tyr-gin
+module github.com/stevens-tyr/tyr-gin
 
 require (
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
