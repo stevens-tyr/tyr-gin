@@ -28,14 +28,14 @@ func Logger() gin.HandlerFunc {
 		//after request
 		latency := time.Since(t)
 		contextLog := log.WithFields(log.Fields{
-			"RequestMethod":   c.Request.Method,
-			"RequestUrl":      c.Request.URL,
-			"RequestHeaders":  c.Request.Header,
-			"RequestBody":     c.Request.Body,
-			"ResponseStatus":  c.Request.Response.Status,
-			"Latency":         latency,
-			"ResponseHeaders": c.Request.Response.Header,
-			"ResponseBody":    c.Request.Response.Body,
+			"RequestMethod":  c.Request.Method,
+			"RequestUrl":     c.Request.URL,
+			"RequestHeaders": c.Request.Header,
+			"RequestBody":    c.Request.Body,
+			//"ResponseStatus":  c.Request.Response.Status,
+			"Latency": latency,
+			//"ResponseHeaders": c.Request.Response.Header,
+			//"ResponseBody":    c.Request.Response.Body,
 		})
 
 		switch c.Request.Response.Status {
