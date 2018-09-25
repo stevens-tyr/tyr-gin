@@ -97,7 +97,7 @@ func Logger() gin.HandlerFunc {
 
 		c.Next()
 		//after request
-		latency := time.Since(t) * time.Second
+		latency := time.Second / time.Since(t)
 
 		contextLog := log.WithFields(log.Fields{
 			"RequestMethod":   c.Request.Method,
