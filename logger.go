@@ -45,13 +45,32 @@ func init() {
 	}
 	logFile, err := os.OpenFile(logFileName, os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
-		os.Exit(1)
+		log.Fatal("Could not create log file. Server Quiting...")
 	}
 	log.SetOutput(logFile)
 
 	// Grab log level from env.
 	logLevelEnv := os.Getenv("LOG_LEVEL")
 	log.SetLevel(determineLogLevel(logLevelEnv))
+	log.Info("Logging starting...")
+}
+
+// Write the function to make buferredWriter type part of go's
+// Writer interface.
+func (b *bufferedWriter) Write(data []byte) (int, error) {
+	b.Buffer.Write(data)
+	return b.out.Write(data)
+}
+
+// ErrorLogger takes an error and a message, if the error is not
+// null log with warning message.
+func ErrorLogger(err error, msg string) {
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+			"msg":   msg,
+		}).Warn("Code Error")
+	}
 }
 
 // Logger a logging middleware to be used with gin.
@@ -73,13 +92,12 @@ func Logger() gin.HandlerFunc {
 			w.Flush()
 		}()
 
-		c.Next()
-
-		bytesBody, _ := ioutil.ReadAll(c.Request.Body)
+		bytesBody, err := ioutil.ReadAll(c.Request.Body)
+		ErrorLogger(err, "Failed to read Request Body.")
 
 		c.Next()
 		//after request
-		latency := time.Since(t)
+		latency := time.Since(t) * time.Second
 
 		contextLog := log.WithFields(log.Fields{
 			"RequestMethod":   c.Request.Method,

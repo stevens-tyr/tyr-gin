@@ -48,10 +48,3 @@ type bufferedWriter struct {
 	out    *bufio.Writer
 	Buffer bytes.Buffer
 }
-
-// Write the function to make buferredWriter type part of go's
-// Writer interface.
-func (b *bufferedWriter) Write(data []byte) (int, error) {
-	b.Buffer.Write(data)
-	return b.out.Write(data)
-}

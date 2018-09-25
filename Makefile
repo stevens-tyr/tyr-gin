@@ -8,7 +8,7 @@ VET = $(GO) vet
 fmt:
 	$(FMT) $(GO_FILES)
 lint:
-	$(VET) -v $(GO_FILES)
+	$(VET) $(GO_FILES)
 	$(LINT) $(GO_FILES)
 test:
 	$(TEST)
