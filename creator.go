@@ -1,7 +1,9 @@
 package tyrgin
 
 import (
-	"github.com/appleboy/gin-jwt"
+	"net/http"
+
+	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,4 +45,29 @@ func AddRoutes(router *gin.Engine, jwt *jwt.GinJWTMiddleware, version, api strin
 			}
 		}
 	}
+}
+
+func notFound(c *gin.Context) {
+	c.JSON(
+		http.StatusNotFound,
+		gin.H{
+			"StatusCode": http.StatusNotFound,
+			"Message":    NotFoundError,
+		},
+	)
+}
+
+func SetUpHealthChecks(c *gin.Context) {
+
+}
+
+func SetupRouter() *gin.Engine {
+	router := gin.Default()
+
+	router.Use(Logger())
+	router.Use(gin.Recovery())
+
+	router.GET("*", notFound)
+
+	return router
 }

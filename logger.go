@@ -65,18 +65,27 @@ func (b *bufferedWriter) Write(data []byte) (int, error) {
 // ErrorLogger takes an error and a message, if the error is not
 // null log with warning message.
 func ErrorLogger(err error, msg string) {
+
 	if err != nil {
 		log.WithFields(log.Fields{
-			"error": err,
-			"msg":   msg,
+			"error":   err,
+			"message": msg,
 		}).Warn("Code Error")
 	}
+
+}
+
+func Log(msg string) {
+	log.WithFields(log.Fields{
+		"message": msg,
+	}).Info("Message")
 }
 
 // Logger a logging middleware to be used with gin.
 // Logs standard information based of the information given.
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		// before request
 		t := time.Now()
 
