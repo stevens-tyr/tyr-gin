@@ -4,7 +4,10 @@ FMT = $(GO)imports -w
 LINT = $(GO)lint
 TEST = $(GO) test
 VET = $(GO) vet
+GET = $(GO) get
 
+get:
+	$(GET)
 fmt:
 	$(FMT) $(GO_FILES)
 lint:
