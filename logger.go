@@ -97,7 +97,7 @@ func Logger() gin.HandlerFunc {
 
 		c.Next()
 		//after request
-		latency := time.Second / time.Since(t)
+		latency := int64(time.Since(t) / time.Millisecond)
 
 		contextLog := log.WithFields(log.Fields{
 			"RequestMethod":   c.Request.Method,
@@ -105,7 +105,7 @@ func Logger() gin.HandlerFunc {
 			"RequestHeaders":  c.Request.Header,
 			"RequestBody":     string(bytesBody),
 			"ResponseStatus":  c.Writer.Status(),
-			"Latency":         latency,
+			"Latency(ms)":     latency,
 			"ResponseHeaders": c.Writer.Header(),
 			"ResponseBody":    string(newWriter.Buffer.Bytes()),
 		})
