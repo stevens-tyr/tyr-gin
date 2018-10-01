@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// getABoutFieldValue gets the about field value if it exists and it is a stirng.
 func getAboutFieldValue(aboutConfigMap map[string]interface{}, key, aboutFilePath string) string {
 
 	value, ok := aboutConfigMap[key]
@@ -27,6 +28,7 @@ func getAboutFieldValue(aboutConfigMap map[string]interface{}, key, aboutFilePat
 	return stringValue
 }
 
+// getAboutFieldValues gets the field value if it exists and it is a slice.
 func getAboutFieldValues(aboutConfigMap map[string]interface{}, key, aboutFilePath string) []string {
 
 	value, ok := aboutConfigMap[key]
@@ -37,7 +39,7 @@ func getAboutFieldValues(aboutConfigMap map[string]interface{}, key, aboutFilePa
 
 	interfaces, ok := value.([]interface{})
 	if !ok {
-		Log(fmt.Sprintf("Field `%s` is not an array in %s.", key, aboutFilePath))
+		Log(fmt.Sprintf("Field `%s` is not an slice in %s.", key, aboutFilePath))
 		return []string{}
 	}
 
@@ -57,6 +59,8 @@ func getAboutFieldValues(aboutConfigMap map[string]interface{}, key, aboutFilePa
 	return strings
 }
 
+// getAboutCustomDataFieldValues gets the field from the customData if it exists and is a valid
+// JSON object.
 func getAboutCustomDataFieldValues(aboutConfigMap map[string]interface{}, aboutFilePath string) map[string]interface{} {
 
 	value, ok := aboutConfigMap["customData"]
@@ -73,13 +77,14 @@ func getAboutCustomDataFieldValues(aboutConfigMap map[string]interface{}, aboutF
 	return mapValue
 }
 
+// About is the function to configure the About and returns the response about the endpoint.
 func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFilePath string, customData map[string]interface{}) string {
 
 	aboutData, _ := ioutil.ReadFile(aboutFilePath)
 
 	// Initialize ConfigAbout with default values in case we have problems reading from the file
 	aboutConfig := ConfigAbout{
-		Id:          AboutFieldNa,
+		ID:          AboutFieldNa,
 		Summary:     AboutFieldNa,
 		Description: AboutFieldNa,
 		Maintainers: []string{},
@@ -95,7 +100,7 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 
 	if err == nil {
 		// Parse out each value individually
-		aboutConfig.Id = getAboutFieldValue(aboutConfigMap, "id", aboutFilePath)
+		aboutConfig.ID = getAboutFieldValue(aboutConfigMap, "id", aboutFilePath)
 		aboutConfig.Summary = getAboutFieldValue(aboutConfigMap, "summary", aboutFilePath)
 		aboutConfig.Description = getAboutFieldValue(aboutConfigMap, "description", aboutFilePath)
 		aboutConfig.Maintainers = getAboutFieldValues(aboutConfigMap, "maintainers", aboutFilePath)
@@ -138,7 +143,7 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 	}
 
 	aboutResponse := AboutResponse{
-		Id:          aboutConfig.Id,
+		ID:          aboutConfig.ID,
 		Name:        aboutConfig.Summary,
 		Description: aboutConfig.Description,
 		Protocol:    protocol,
@@ -161,14 +166,14 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 		go func(s StatusEndpoint, i int) {
 			start := time.Now()
 			dependencyStatus := translateStatusList(s.StatusCheck.CheckStatus(s.Name))
-			var elapsed float64 = float64(time.Since(start)) * 0.000000001
+			var elapsed = float64(time.Since(start)) * 0.000000001
 			dependency := Dependency{
 				Name:           s.Name,
 				Status:         dependencyStatus,
 				StatusDuration: elapsed,
 				StatusPath:     s.Slug,
 				Type:           s.Type,
-				IsTraversable:  s.IsTraversable,
+				ITraversable:   s.IsTraversable,
 			}
 
 			dc <- dependencyPosition{
@@ -193,7 +198,7 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 
 	aboutResponse.Dependencies = dependencies
 
-	aboutResponseJson, err := json.Marshal(aboutResponse)
+	aboutResponseJSON, err := json.Marshal(aboutResponse)
 	if err != nil {
 		msg := fmt.Sprintf("Error serializing AboutResponse: %s", err)
 		sl := StatusList{
@@ -204,5 +209,5 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 		return SerializeStatusList(sl)
 	}
 
-	return string(aboutResponseJson)
+	return string(aboutResponseJSON)
 }

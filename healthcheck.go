@@ -10,10 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func translateStatusList(s StatusList) []JsonResponse {
+// translateStatusLists takes a StatusList and converts it to a slice of JSONResponse.
+func translateStatusList(s StatusList) []JSONResponse {
 
 	if len(s.StatusList) <= 0 {
-		return []JsonResponse{
+		return []JSONResponse{
 			CRITICAL,
 			Status{
 				Description: "Invalid status response",
@@ -26,32 +27,36 @@ func translateStatusList(s StatusList) []JsonResponse {
 	r := s.StatusList[0]
 
 	if r.Result == OK {
-		return []JsonResponse{
+		return []JSONResponse{
 			OK,
 		}
-	} else {
-		return []JsonResponse{
-			r.Result,
-			r,
-		}
+	}
+
+	return []JSONResponse{
+		r.Result,
+		r,
 	}
 
 }
 
+// SerializeStatusList serializes a status list.
 func SerializeStatusList(s StatusList) string {
 
-	statusListJsonResponse := translateStatusList(s)
-	statusListJson, err := json.Marshal(statusListJsonResponse)
+	statusListJSONResponse := translateStatusList(s)
+	statusListJSON, err := json.Marshal(statusListJSONResponse)
 	ErrorLogger(err, fmt.Sprintf(`["CRIT", {"description":"Invalid StatusList","result":"CRIT","detials":"Error serializing StatusList: %v error:%s"}]`, s, err))
 
-	return string(statusListJson)
+	return string(statusListJSON)
 }
 
+// ExecuteStatusCheck takes a StatusEndpoint and calls the StatusCheck CheckStatus function
+// for the StatusCheck field.
 func ExecuteStatusCheck(s *StatusEndpoint) string {
 	result := s.StatusCheck.CheckStatus(s.Name)
 	return SerializeStatusList(result)
 }
 
+// FindStatusEndpoint finds a StatusEndpoint from a slice of them and returns the one.
 func FindStatusEndpoint(statusEndpoints []StatusEndpoint, slug string) *StatusEndpoint {
 
 	if slug == "" {
@@ -75,7 +80,7 @@ func HealthPointHandler(statusEndpoints []StatusEndpoint, aboutFilePath, version
 	}
 }
 
-// HandlerPointHandlerFunc returns a http.HandlerFunc that responds to status check requests. It should be registered at `/status/...`
+// HealthPointHandlerFunc returns a http.HandlerFunc that responds to status check requests. It should be registered at `/status/...`
 func HealthPointHandlerFunc(statusEndpoints []StatusEndpoint, aboutFilePath, versionFilePath string, customData map[string]interface{}) http.HandlerFunc {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +91,7 @@ func HealthPointHandlerFunc(statusEndpoints []StatusEndpoint, aboutFilePath, ver
 		switch endpoint {
 		case "about":
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			io.WriteString(w, About(statusEndpoints, AboutProtocolHttp, aboutFilePath, versionFilePath, customData))
+			io.WriteString(w, About(statusEndpoints, AboutProtocolHTTP, aboutFilePath, versionFilePath, customData))
 
 		case "aggregate":
 			typeFilter := r.URL.Query().Get("type")
@@ -109,7 +114,7 @@ func HealthPointHandlerFunc(statusEndpoints []StatusEndpoint, aboutFilePath, ver
 			}
 
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			io.WriteString(w, Traverse(statusEndpoints, dependencies, action, AboutProtocolHttp, aboutFilePath, versionFilePath, customData))
+			io.WriteString(w, Traverse(statusEndpoints, dependencies, action, AboutProtocolHTTP, aboutFilePath, versionFilePath, customData))
 		default:
 			endpoint := FindStatusEndpoint(statusEndpoints, endpoint)
 			if endpoint == nil {

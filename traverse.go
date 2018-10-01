@@ -2,6 +2,7 @@ package tyrgin
 
 import "fmt"
 
+// Traverse is a core function to traverse a list of dependencies in a StatusEndpoint.
 func Traverse(s []StatusEndpoint, dependencies []string, action, protocol, aboutFilePath, versionFilePath string, customData map[string]interface{}) string {
 
 	if action == "" {
@@ -88,8 +89,8 @@ func Traverse(s []StatusEndpoint, dependencies []string, action, protocol, about
 		}
 
 		return SerializeStatusList(sl)
-	} else {
-		return resp
 	}
+
+	return resp
 
 }

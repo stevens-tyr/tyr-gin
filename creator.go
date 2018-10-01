@@ -36,17 +36,22 @@ func (a *APIAction) action(route *gin.RouterGroup, jwt *jwt.GinJWTMiddleware) {
 // AddRoutes takes a gin server, gin jwt instance, version number as a string,
 // api endpoint name and a list of APIActions to add to it.
 func AddRoutes(router *gin.Engine, jwt *jwt.GinJWTMiddleware, version, api string, fns []APIAction) {
+
 	ver := router.Group("/api/v" + version)
 	{
 		route := ver.Group(api)
 		{
+
 			for _, fn := range fns {
 				fn.action(route, jwt)
 			}
+
 		}
 	}
+
 }
 
+// notFound a general 404 error message.
 func notFound(c *gin.Context) {
 	c.JSON(
 		http.StatusNotFound,
@@ -57,10 +62,8 @@ func notFound(c *gin.Context) {
 	)
 }
 
-func SetUpHealthChecks(c *gin.Context) {
-
-}
-
+// SetupRouter returns an instance to a *gin.Enginer that is has
+// some preconfigurations already set up.
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 

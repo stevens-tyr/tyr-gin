@@ -75,6 +75,7 @@ func ErrorLogger(err error, msg string) {
 
 }
 
+// Log a function to just log a message from a function.
 func Log(msg string) {
 	log.WithFields(log.Fields{
 		"message": msg,

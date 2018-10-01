@@ -46,15 +46,18 @@ func NewRoute(action func(gin *gin.Context), endpoint string, private bool, meth
 }
 
 // About Check Types/Structs
+
+// Default Fields
 const (
 	AboutFieldNa      string = "N/A"
-	AboutProtocolHttp string = "http"
+	AboutProtocolHTTP string = "http"
 	VersionNa         string = "N/A"
 )
 
 type (
+	// ConfigAbout this struct to configure an About API call.
 	ConfigAbout struct {
-		Id          string                 `json:"id"`
+		ID          string                 `json:"id"`
 		Summary     string                 `json:"sumamry"`
 		Description string                 `json:"description"`
 		Maintainers []string               `json:"maintainers"`
@@ -65,8 +68,9 @@ type (
 		CustomData  map[string]interface{} `json:"customData"`
 	}
 
+	// AboutResponse is the response the Aboout API response.
 	AboutResponse struct {
-		Id           string                 `json:"id"`
+		ID           string                 `json:"id"`
 		Name         string                 `json:"name"`
 		Description  string                 `json:"description"`
 		Protocol     string                 `json:"protocol"`
@@ -81,15 +85,19 @@ type (
 		CustomData   map[string]interface{} `json:"customData"`
 	}
 
+	// Dependency is the dependency struct to go inside the AboutResponse struct
+	// to detail the dependencies of the service.
 	Dependency struct {
 		Name           string         `json:"name"`
-		Status         []JsonResponse `json:"status"`
+		Status         []JSONResponse `json:"status"`
 		StatusDuration float64        `json:"statusDuration"`
 		StatusPath     string         `json:"statusPath"`
 		Type           string         `json:"type"`
 		IsTraversable  bool           `json:"isTraversable"`
 	}
 
+	// dependencyPosition is a simple struct to keep track of where dependencies are
+	// in a slice of dependencyPositions.
 	dependencyPosition struct {
 		item     Dependency
 		position int
@@ -97,8 +105,11 @@ type (
 )
 
 // Health Check Types/Structs
+
+// AlertLevel is a string wrapper to tell the Health check the alert level of items.
 type AlertLevel string
 
+// Some constanst to keep track of logging level
 const (
 	OK       AlertLevel = "OK"
 	WARNING  AlertLevel = "WARN"
@@ -106,10 +117,13 @@ const (
 )
 
 type (
+	// StatusResponse is just a struct to represent the status of responses and
+	// goes inside the StatusEndpoint struct.
 	StatusResponse struct {
 		Status string `jon:"status"`
 	}
 
+	// StatusEndpoint is the struct to track information about an endpoints status.
 	StatusEndpoint struct {
 		Name          string
 		Slug          string
@@ -119,26 +133,36 @@ type (
 		TraverseCheck TraverseCheck
 	}
 
+	// Status struct keeps track of the details, description and results of a status.
 	Status struct {
 		Description string     `json:"description"`
 		Result      AlertLevel `json:"result"`
 		Details     string     `json:"details"`
 	}
 
+	// StatusList to convienently pass around a slice of the Status struct.
 	StatusList struct {
 		StatusList []Status
 	}
 
+	// StatusCheck itnerface this way when we add new services we can have it implement this
+	// interace so that we can just call this function on the StatusCheck field from
+	// the StatusEndpoint struct.
 	StatusCheck interface {
 		CheckStatus(name string) StatusList
 	}
 
-	JsonResponse interface{}
+	// JSONResponse is a wrapper of the interface{} type.
+	JSONResponse interface{}
 
+	// TraverseCheck interface this way when we add new services we can have it implement this
+	// interace so that we can just call this function on the TraverseCheck field from
+	// the StatusEndpoint struct.
 	TraverseCheck interface {
 		Traverse(traversalPath []string, action string) (string, error)
 	}
 
+	// MongoStatusChecker struct for when we eventually add mongo.
 	MongoStatusChecker struct{}
 )
 
