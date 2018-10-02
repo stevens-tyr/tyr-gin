@@ -19,7 +19,7 @@ require (
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.0.6
-	github.com/stretchr/testify v1.2.2 // indirect
+	github.com/stretchr/testify v1.2.2
 	github.com/tidwall/gjson v1.1.3 // indirect
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
 	github.com/ugorji/go/codec v0.0.0-20180920200043-2c86ab75771c // indirect

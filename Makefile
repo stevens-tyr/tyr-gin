@@ -4,7 +4,12 @@ FMT = $(GO)imports -w
 LINT = $(GO)lint
 TEST = $(GO) test
 VET = $(GO) vet
+GET = $(GO) get
 
+.PHONY: get fmt lint test all
+
+get:
+	$(GET)
 fmt:
 	$(FMT) $(GO_FILES)
 lint:
@@ -12,4 +17,7 @@ lint:
 	$(LINT) $(GO_FILES)
 test:
 	$(TEST)
+clean:
+	rm -f log.json
+	rm -f *~
 all: fmt lint test
