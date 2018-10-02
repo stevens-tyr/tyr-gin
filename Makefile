@@ -6,6 +6,8 @@ TEST = $(GO) test
 VET = $(GO) vet
 GET = $(GO) get
 
+.PHONY: get fmt lint test all
+
 get:
 	$(GET)
 fmt:
@@ -15,4 +17,7 @@ lint:
 	$(LINT) $(GO_FILES)
 test:
 	$(TEST)
+clean:
+	rm -f log.json
+	rm -f *~
 all: fmt lint test

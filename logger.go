@@ -3,6 +3,7 @@ package tyrgin
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"os"
 	"time"
@@ -75,8 +76,8 @@ func ErrorLogger(err error, msg string) {
 
 }
 
-// Log a function to just log a message from a function.
-func Log(msg string) {
+// NormalLog a function to just log a message from a function.
+func NormalLog(msg string) {
 	log.WithFields(log.Fields{
 		"message": msg,
 	}).Info("Message")
@@ -86,7 +87,6 @@ func Log(msg string) {
 // Logs standard information based of the information given.
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		// before request
 		t := time.Now()
 
@@ -102,22 +102,35 @@ func Logger() gin.HandlerFunc {
 			w.Flush()
 		}()
 
-		bytesBody, err := ioutil.ReadAll(c.Request.Body)
-		ErrorLogger(err, "Failed to read Request Body.")
+		// Get Request Body
+		var reqBody map[string]interface{}
+		if c.Request.Body != nil {
+			// Read the buffer then make a copy of it
+			// to attach back to the request.
+			bytesBody, err := ioutil.ReadAll(c.Request.Body)
+			ErrorLogger(err, "Failed to read Request Body.")
+			json.Unmarshal(bytesBody, &reqBody)
+			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bytesBody))
+		}
 
 		c.Next()
 		//after request
-		latency := time.Second / time.Since(t)
+		latency := int64(time.Since(t) / time.Millisecond)
+
+		var respBody map[string]interface{}
+		if newWriter.Buffer.Bytes() != nil {
+			json.Unmarshal(newWriter.Buffer.Bytes(), &respBody)
+		}
 
 		contextLog := log.WithFields(log.Fields{
 			"RequestMethod":   c.Request.Method,
 			"RequestUrl":      c.Request.URL,
 			"RequestHeaders":  c.Request.Header,
-			"RequestBody":     string(bytesBody),
+			"RequestBody":     reqBody,
 			"ResponseStatus":  c.Writer.Status(),
-			"Latency":         latency,
+			"Latency(ms)":     latency,
 			"ResponseHeaders": c.Writer.Header(),
-			"ResponseBody":    string(newWriter.Buffer.Bytes()),
+			"ResponseBody":    respBody,
 		})
 
 		// Should never panic or fatal because that will exit server.

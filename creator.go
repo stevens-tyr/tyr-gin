@@ -56,8 +56,8 @@ func notFound(c *gin.Context) {
 	c.JSON(
 		http.StatusNotFound,
 		gin.H{
-			"StatusCode": http.StatusNotFound,
-			"Message":    NotFoundError,
+			"statusCode": http.StatusNotFound,
+			"message":    NotFoundError,
 		},
 	)
 }
@@ -70,7 +70,7 @@ func SetupRouter() *gin.Engine {
 	router.Use(Logger())
 	router.Use(gin.Recovery())
 
-	router.GET("*", notFound)
+	router.NoRoute(notFound)
 
 	return router
 }

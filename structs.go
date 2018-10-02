@@ -36,7 +36,7 @@ type APIAction struct {
 
 // NewRoute takes a function that takes gin context, endpoint, whether the route should be login protected, and method type.
 // This returns a pointer to a APIAction.
-func NewRoute(action func(gin *gin.Context), endpoint string, private bool, method httpMethod) APIAction {
+func NewRoute(action func(c *gin.Context), endpoint string, private bool, method httpMethod) APIAction {
 	return APIAction{
 		Func:    action,
 		Route:   endpoint,

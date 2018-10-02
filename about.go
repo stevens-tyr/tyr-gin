@@ -15,13 +15,13 @@ func getAboutFieldValue(aboutConfigMap map[string]interface{}, key, aboutFilePat
 
 	value, ok := aboutConfigMap[key]
 	if !ok {
-		Log(fmt.Sprintf("Field `%s`  missing from %s.", key, aboutFilePath))
+		NormalLog(fmt.Sprintf("Field `%s`  missing from %s.", key, aboutFilePath))
 		return AboutFieldNa
 	}
 
 	stringValue, ok := value.(string)
 	if !ok {
-		Log(fmt.Sprintf("Field `%s` is not a string in %s.", key, aboutFilePath))
+		NormalLog(fmt.Sprintf("Field `%s` is not a string in %s.", key, aboutFilePath))
 		return AboutFieldNa
 	}
 
@@ -33,13 +33,13 @@ func getAboutFieldValues(aboutConfigMap map[string]interface{}, key, aboutFilePa
 
 	value, ok := aboutConfigMap[key]
 	if !ok {
-		Log(fmt.Sprintf("Field `%s` missing from %s.", key, aboutFilePath))
+		NormalLog(fmt.Sprintf("Field `%s` missing from %s.", key, aboutFilePath))
 		return []string{}
 	}
 
 	interfaces, ok := value.([]interface{})
 	if !ok {
-		Log(fmt.Sprintf("Field `%s` is not an slice in %s.", key, aboutFilePath))
+		NormalLog(fmt.Sprintf("Field `%s` is not an slice in %s.", key, aboutFilePath))
 		return []string{}
 	}
 
@@ -49,7 +49,7 @@ func getAboutFieldValues(aboutConfigMap map[string]interface{}, key, aboutFilePa
 		stringValue, ok := interfaces[i].(string)
 		if !ok {
 			strings[i] = AboutFieldNa
-			Log(fmt.Sprintf("Field[%d] `%s` is not a String in %s.", i, key, aboutFilePath))
+			NormalLog(fmt.Sprintf("Field[%d] `%s` is not a String in %s.", i, key, aboutFilePath))
 		} else {
 			strings[i] = stringValue
 		}
@@ -70,7 +70,7 @@ func getAboutCustomDataFieldValues(aboutConfigMap map[string]interface{}, aboutF
 
 	mapValue, ok := value.(map[string]interface{})
 	if !ok {
-		Log(fmt.Sprintf("Field `customData` is not a valid JSON object in %s.", aboutFilePath))
+		NormalLog(fmt.Sprintf("Field `customData` is not a valid JSON object in %s.", aboutFilePath))
 		return nil
 	}
 
@@ -80,7 +80,8 @@ func getAboutCustomDataFieldValues(aboutConfigMap map[string]interface{}, aboutF
 // About is the function to configure the About and returns the response about the endpoint.
 func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFilePath string, customData map[string]interface{}) string {
 
-	aboutData, _ := ioutil.ReadFile(aboutFilePath)
+	aboutData, err := ioutil.ReadFile(aboutFilePath)
+	ErrorLogger(err, fmt.Sprintf("Something went wrong reading file `%s`.", aboutFilePath))
 
 	// Initialize ConfigAbout with default values in case we have problems reading from the file
 	aboutConfig := ConfigAbout{
@@ -96,7 +97,7 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 
 	// Unmarshal JSON into a generic object so we don't completely fail if one of the fields is invalid or missing
 	var aboutConfigMap map[string]interface{}
-	err := json.Unmarshal(aboutData, &aboutConfigMap)
+	err = json.Unmarshal(aboutData, &aboutConfigMap)
 
 	if err == nil {
 		// Parse out each value individually
@@ -173,7 +174,7 @@ func About(statusEndpoints []StatusEndpoint, protocol, aboutFilePath, versionFil
 				StatusDuration: elapsed,
 				StatusPath:     s.Slug,
 				Type:           s.Type,
-				ITraversable:   s.IsTraversable,
+				IsTraversable:  s.IsTraversable,
 			}
 
 			dc <- dependencyPosition{
