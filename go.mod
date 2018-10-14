@@ -25,7 +25,7 @@ require (
 	github.com/ugorji/go/codec v0.0.0-20180920200043-2c86ab75771c // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
-	golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b // indirect
+	golang.org/x/crypto v0.0.0-20181012144002-a92615f3c490 // indirect
 	golang.org/x/net v0.0.0-20180921000356-2f5d2388922f // indirect
 	golang.org/x/sys v0.0.0-20180924142050-c01370cb5c9b // indirect
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
@@ -35,4 +35,5 @@ require (
 	gopkg.in/gin-gonic/gin.v1 v1.3.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
+	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
 )

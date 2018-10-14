@@ -1,7 +1,7 @@
 * Tyr-Gin
 ** Why?
-The purpose of this is to centralize some features common to a gin service 
-that we might use in our microservices. This way each microservice does not 
+The purpose of this is to centralize some features common to a gin service
+that we might use in our microservices. This way each microservice does not
 need to re-implement features. Such as jwt functions, logging and etc.
 ** Features
 1. Logging
@@ -15,6 +15,5 @@ need to re-implement features. Such as jwt functions, logging and etc.
 5. Run make all to fmt, lint, and test code.
 6. Make a merge request.
 ** Todo
-1. Add testing(ci if I can figure out how gitlab works with that).
-2. Add Implementation of jwt.
-3. Add mongodb connection.
+1. Add Implementation of jwt.
+2. Add mongodb connection.

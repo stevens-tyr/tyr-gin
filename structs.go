@@ -3,8 +3,10 @@ package tyrgin
 import (
 	"bufio"
 	"bytes"
+	"errors"
 
 	"github.com/gin-gonic/gin"
+	mgo "gopkg.in/mgo.v2"
 )
 
 // Creator Types/Structs
@@ -24,6 +26,14 @@ const (
 // Default Error Messages
 const (
 	NotFoundError = "404 PAGE NOT FOUND"
+)
+
+// Errors
+var (
+	UserNotFoundError      = errors.New("USER NOT FOUND")
+	IncorrectPasswordError = errors.New("INCORRECT PASSWORD")
+	MongoSessionFailure    = errors.New("FAILED TO GET MONGO SESSION")
+	MongoCollectionFailure = errors.New("MONGO COLLECTION DOES NOT EXIST")
 )
 
 // APIAction is the core of how you can easily add routes to the server.
@@ -162,8 +172,15 @@ type (
 		Traverse(traversalPath []string, action string) (string, error)
 	}
 
+	MongoReplStatus struct {
+		OK       int    `bson:"ok" binding:"required"`
+		ErrorMsg string `bson:"errmsg" binding:"required"`
+	}
+
 	// MongoStatusChecker struct for when we eventually add mongo.
-	MongoStatusChecker struct{}
+	MongoDBStatusChecker struct {
+		RPL *mgo.Session
+	}
 )
 
 // Logger Types/Structs
@@ -174,3 +191,32 @@ type bufferedWriter struct {
 	out    *bufio.Writer
 	Buffer bytes.Buffer
 }
+
+// JWT Types/Structs
+
+type (
+	Email struct {
+		Email string `bson:"email" json:"email" binding:"required"`
+	}
+
+	Login struct {
+		Email    string `bson:"email" json:"email" binding:"required"`
+		Password string `bson:"password" json:"password" binding:"required"`
+	}
+
+	Register struct {
+		Email                string `bson:"email" json:"email" binding:"required"`
+		Password             string `bson:"password" json:"password" binding:"required"`
+		PasswordConfirmation string `bson:"password_confirmation" json:"password_confirmation" binding:"required"`
+		First                string `bson:"first_name" json:"first_name" binding:"required"`
+		Last                 string `bson:"last_name" json:"last_name" binding:"required"`
+	}
+
+	User struct {
+		Email    string   `bson:"email" json:"email" binding:"required"`
+		Password []byte   `bson:"password" json:"password" binding:"required"`
+		First    string   `bson:"first_name" json:"first_name" binding:"required"`
+		Last     string   `bson:"last_name" json:"last_name" binding:"required"`
+		Roles    []string `bson:"roles" json:"roles" binding:"required"`
+	}
+)
