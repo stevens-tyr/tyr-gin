@@ -30,10 +30,14 @@ const (
 
 // Errors
 var (
-	UserNotFoundError      = errors.New("USER NOT FOUND")
-	IncorrectPasswordError = errors.New("INCORRECT PASSWORD")
-	MongoSessionFailure    = errors.New("FAILED TO GET MONGO SESSION")
-	MongoCollectionFailure = errors.New("MONGO COLLECTION DOES NOT EXIST")
+	// UserNotFoundError an error to throw for when a User is not found.
+	ErrorUserNotFound = errors.New("USER NOT FOUND")
+	// IncorrectPasswordError an error to throw for when an inccorect passowrd is entered.
+	ErrorIncorrectPassword = errors.New("INCORRECT PASSWORD")
+	// MongoSessionFailure an error to throw for when a mongo Session fails.
+	ErrorMongoSessionFailure = errors.New("FAILED TO GET MONGO SESSION")
+	// MongoCollectionFailure an error to throw for when a mongo collection does not exist.
+	ErrorMongoCollectionFailure = errors.New("MONGO COLLECTION DOES NOT EXIST")
 )
 
 // APIAction is the core of how you can easily add routes to the server.
@@ -172,13 +176,14 @@ type (
 		Traverse(traversalPath []string, action string) (string, error)
 	}
 
+	// MongoReplStatus a struct to unpack message from checking mongo replicatset.
 	MongoReplStatus struct {
 		OK       int    `bson:"ok" binding:"required"`
 		ErrorMsg string `bson:"errmsg" binding:"required"`
 	}
 
-	// MongoStatusChecker struct for when we eventually add mongo.
-	MongoDBStatusChecker struct {
+	// MongoRPLStatusChecker struct for when we eventually add mongo.
+	MongoRPLStatusChecker struct {
 		RPL *mgo.Session
 	}
 )
@@ -195,16 +200,19 @@ type bufferedWriter struct {
 // JWT Types/Structs
 
 type (
+	// Email struct to get the email of a User.
 	Email struct {
 		Email string `bson:"email" json:"email" binding:"required"`
 	}
 
+	// Login struct a form to login a Tyr User.
 	Login struct {
 		Email    string `bson:"email" json:"email" binding:"required"`
 		Password string `bson:"password" json:"password" binding:"required"`
 	}
 
-	Register struct {
+	// RegisterForm struct a form for register a Tyr User.
+	RegisterForm struct {
 		Email                string `bson:"email" json:"email" binding:"required"`
 		Password             string `bson:"password" json:"password" binding:"required"`
 		PasswordConfirmation string `bson:"password_confirmation" json:"password_confirmation" binding:"required"`
@@ -212,6 +220,7 @@ type (
 		Last                 string `bson:"last_name" json:"last_name" binding:"required"`
 	}
 
+	// User a default User struct to represent a User in Tyr.
 	User struct {
 		Email    string   `bson:"email" json:"email" binding:"required"`
 		Password []byte   `bson:"password" json:"password" binding:"required"`

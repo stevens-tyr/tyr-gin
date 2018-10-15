@@ -12,7 +12,7 @@ import (
 )
 
 type respTest struct {
-	StatusCode int    `json:"statusCode"`
+	StatusCode int    `json:"status_code"`
 	Message    string `json:"message"`
 	Uploaded   string `json:"uploaded"`
 	Count      int    `json:"count"`
@@ -32,10 +32,10 @@ func testGetFunc(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"statusCode": http.StatusOK,
-			"message":    "Hello World!",
-			"uploaded":   uploaded,
-			"count":      count,
+			"status_code": http.StatusOK,
+			"message":     "Hello World!",
+			"uploaded":    uploaded,
+			"count":       count,
 		},
 	)
 }
@@ -47,10 +47,10 @@ func testDeleteFunc(c *gin.Context) {
 	c.JSON(
 		http.StatusResetContent,
 		gin.H{
-			"statusCode": http.StatusResetContent,
-			"message":    "Hello Deleted",
-			"uploaded":   uploaded,
-			"count":      count,
+			"status_code": http.StatusResetContent,
+			"message":     "Hello Deleted",
+			"uploaded":    uploaded,
+			"count":       count,
 		},
 	)
 }
@@ -70,10 +70,10 @@ func testPatchFunc(c *gin.Context) {
 	c.JSON(
 		http.StatusCreated,
 		gin.H{
-			"statusCode": http.StatusCreated,
-			"message":    "Hello Patch",
-			"uploaded":   uploaded,
-			"count":      count,
+			"status_code": http.StatusCreated,
+			"message":     "Hello Patch",
+			"uploaded":    uploaded,
+			"count":       count,
 		},
 	)
 }
@@ -89,10 +89,10 @@ func testPostFunc(c *gin.Context) {
 	c.JSON(
 		http.StatusCreated,
 		gin.H{
-			"statusCode": http.StatusCreated,
-			"message":    "Hello Post",
-			"uploaded":   uploaded,
-			"count":      count,
+			"status_code": http.StatusCreated,
+			"message":     "Hello Post",
+			"uploaded":    uploaded,
+			"count":       count,
 		},
 	)
 }
@@ -110,10 +110,10 @@ func testPutFunc(c *gin.Context) {
 	c.JSON(
 		http.StatusCreated,
 		gin.H{
-			"statusCode": http.StatusCreated,
-			"message":    "Hello Put",
-			"uploaded":   uploaded,
-			"count":      count,
+			"status_code": http.StatusCreated,
+			"message":     "Hello Put",
+			"uploaded":    uploaded,
+			"count":       count,
 		},
 	)
 }

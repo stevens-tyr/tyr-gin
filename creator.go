@@ -71,11 +71,11 @@ func SetupRouter() *gin.Engine {
 	router.Use(gin.Recovery())
 
 	var authEndpoints = []APIAction{
-		NewRoute(jwt.LoginHandler, "login", false, POST),
+		NewRoute(authMiddleware.LoginHandler, "login", false, POST),
 		NewRoute(Register, "register", false, POST),
 	}
 
-	AddRoutes(router, jwt, "1", "auth", authEndpoints)
+	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
 
 	router.NoRoute(notFound)
 

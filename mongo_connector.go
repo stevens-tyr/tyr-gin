@@ -6,23 +6,27 @@ import (
 	"os"
 
 	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
+// GetSession returns a mgo session. Uses MANGO_URI env variable.
 func GetSession() (*mgo.Session, error) {
 	session, err := mgo.Dial(os.Getenv("MANGO_URI"))
 
 	return session, err
 }
 
+// GetDataBase takes a string and returns a mongo db of that name.
 func GetDataBase(d string, s *mgo.Session) *mgo.Database {
 	return s.DB(d)
 }
 
+// GetCollection takes a string and returns a mongo collection of that name.
 func GetCollection(c string, db *mgo.Database) *mgo.Collection {
 	return db.C(c)
 }
 
+// SafeGetCollection takes a string and returns a mongo collection of that name
+// only if it exists and returns an error if it does not.
 func SafeGetCollection(c string, db *mgo.Database) (*mgo.Collection, error) {
 	cnames, err := db.CollectionNames()
 	if err != nil {
@@ -41,15 +45,17 @@ func SafeGetCollection(c string, db *mgo.Database) (*mgo.Collection, error) {
 	return nil, err
 }
 
-func (m MongoDBStatusChecker) CheckStatus(name string) StatusList {
-	var result MongoReplStatus
-	m.RPL.Run(bson.D{{"replSetGetStatus", 1}}, &result)
+// CheckStatus here is of the struct for checking mongo replica set statuses.
+func (m MongoRPLStatusChecker) CheckStatus(name string) StatusList {
+	var replResult MongoReplStatus
+	m.RPL.Run("replSetGetStatus", &replResult)
 
-	if result.OK == 0 {
+	var result Status
+	if replResult.OK == 0 {
 		result = Status{
 			Description: name,
 			Result:      CRITICAL,
-			Details:     fmt.Sprintf("%v check failed: %v", name, result.ErrorMsg),
+			Details:     fmt.Sprintf("%v check failed: %v", name, replResult.ErrorMsg),
 		}
 	} else {
 		result = Status{
