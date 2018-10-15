@@ -56,8 +56,8 @@ func notFound(c *gin.Context) {
 	c.JSON(
 		http.StatusNotFound,
 		gin.H{
-			"statusCode": http.StatusNotFound,
-			"message":    NotFoundError,
+			"status_code": http.StatusNotFound,
+			"message":     NotFoundError,
 		},
 	)
 }
@@ -69,6 +69,13 @@ func SetupRouter() *gin.Engine {
 
 	router.Use(Logger())
 	router.Use(gin.Recovery())
+
+	var authEndpoints = []APIAction{
+		NewRoute(authMiddleware.LoginHandler, "login", false, POST),
+		NewRoute(Register, "register", false, POST),
+	}
+
+	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
 
 	router.NoRoute(notFound)
 
