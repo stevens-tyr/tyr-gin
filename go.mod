@@ -3,6 +3,7 @@ module github.com/stevens-tyr/tyr-gin
 require (
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
 	github.com/appleboy/gofight v2.0.0+incompatible // indirect
+	github.com/badoux/checkmail v0.0.0-20180430153108-0755fe2dc241
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20180617171254-12df4a18567f
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -25,8 +26,10 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
 	golang.org/x/crypto v0.0.0-20181012144002-a92615f3c490
+	golang.org/x/lint v0.0.0-20181011164241-5906bd5c48cd // indirect
 	golang.org/x/net v0.0.0-20180921000356-2f5d2388922f // indirect
 	golang.org/x/sys v0.0.0-20180924142050-c01370cb5c9b // indirect
+	golang.org/x/tools v0.0.0-20181019201213-3e7aa9e59977 // indirect
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
 	gopkg.in/appleboy/gofight.v2 v2.0.0 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect

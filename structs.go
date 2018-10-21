@@ -30,6 +30,7 @@ const (
 
 // Errors
 var (
+	ErrorEmailNotValid = errors.New("EMAIL NOT VALID")
 	// UserNotFoundError an error to throw for when a User is not found.
 	ErrorUserNotFound = errors.New("USER NOT FOUND")
 	// IncorrectPasswordError an error to throw for when an inccorect passowrd is entered.

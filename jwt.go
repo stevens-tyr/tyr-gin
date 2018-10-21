@@ -1,6 +1,7 @@
 package tyrgin
 
 import (
+	"regexp"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt"
@@ -91,6 +92,14 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	if err = IsValidEmail(register.Email); err != nil {
+		c.JSON(400, gin.H{
+			"status_code": 400,
+			"message":     "Email is invalid.",
+		})
+		return
+	}
+
 	var user User
 	if err = col.Find(bson.M{"email": register.Email}).One(&user); err != nil {
 		c.JSON(400, gin.H{
@@ -107,8 +116,6 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-
-	// TODO: email validation here
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(register.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -174,4 +181,16 @@ var authMiddleware = &jwt.GinJWTMiddleware{
 func AuthMid() *jwt.GinJWTMiddleware {
 
 	return authMiddleware
+}
+
+// IsValidEmail checks an email string to be valid using regex
+// returns ErrorEmailNotValid
+// TODO: add host check or send validation email
+func IsValidEmail(email string) error {
+	validEmailForm := regexp.MustCompile("\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")
+	if !validEmailForm.MatchString(email) {
+		return ErrorEmailNotValid
+	}
+	return nil
+
 }
