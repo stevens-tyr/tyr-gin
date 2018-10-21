@@ -93,7 +93,7 @@ func Register(c *gin.Context) {
 	}
 
 	if err = IsValidEmail(register.Email); err != nil {
-		msg := "Email is in an invalid format"
+		msg := "Email is invalid"
 		if err == ErrorUnresolvableEmailHost {
 			msg = "Unable to resolve email host"
 		}
