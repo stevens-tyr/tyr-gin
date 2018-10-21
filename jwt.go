@@ -93,9 +93,13 @@ func Register(c *gin.Context) {
 	}
 
 	if err = IsValidEmail(register.Email); err != nil {
+		msg := "Email is in an invalid format"
+		if err == ErrorUnresolvableEmailHost {
+			msg = "Unable to resolve email host"
+		}
 		c.JSON(400, gin.H{
 			"status_code": 400,
-			"message":     "Email is invalid.",
+			"message":     msg,
 		})
 		return
 	}
