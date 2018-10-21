@@ -1,11 +1,11 @@
 package tyrgin
 
 import (
-	"regexp"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
+	"github.com/goware/emailx"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -183,14 +183,19 @@ func AuthMid() *jwt.GinJWTMiddleware {
 	return authMiddleware
 }
 
-// IsValidEmail checks an email string to be valid using regex
-// returns ErrorEmailNotValid
-// TODO: add host check or send validation email
+// IsValidEmail checks an email string to be valid and with resolvable host
+// returns ErrorEmailNotValid or ErrorUnresolvableEmailHost
 func IsValidEmail(email string) error {
-	validEmailForm := regexp.MustCompile("\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")
-	if !validEmailForm.MatchString(email) {
-		return ErrorEmailNotValid
+
+	err := emailx.Validate(email)
+	if err != nil {
+		if err == emailx.ErrInvalidFormat {
+			return ErrorEmailNotValid
+		}
+		if err == emailx.ErrUnresolvableHost {
+			return ErrorUnresolvableEmailHost
+		}
+		return err
 	}
 	return nil
-
 }

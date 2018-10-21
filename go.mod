@@ -9,6 +9,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
+	github.com/goware/emailx v0.0.0-20171023230436-0bae9679d4e3
 	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/labstack/echo v3.2.1+incompatible // indirect
 	github.com/labstack/gommon v0.2.7 // indirect

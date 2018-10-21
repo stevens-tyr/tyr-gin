@@ -12,26 +12,27 @@ func TestIsValidEmail(t *testing.T) {
 		"",
 		"test",
 		"test@",
-		"testing.domain",
-		"noDotAfterAtSymbol@domain",
+		"testing.gmail",
+		"noDotAfterAtSymbol@gmail",
 		"endswithdot@domain.",
 		"test..twodotsinvalid@gmail.com",
-		".firstchardot@domain.com",
-		"specialCharsNotAllowedInDomain@domain!#.com",
+		"hostinvalid@gmail.co.uk",
+		".firstchardot@gmail.com",
+		"specialCharsNotAllowedInDomain@gmail!#.com",
 	}
 	for _, s := range invalidEmails {
-		isValid := IsValidEmail(s) == nil
-		assert.Falsef(t, isValid, "Invalid email detected as valid: '%s'", s)
+		err := IsValidEmail(s)
+		assert.Truef(t, err != nil, "Invalid email detected as valid: '%s'", s)
 	}
 	// Valid emails, check for all valid chars
 	validEmails := []string{
-		"test@test.com",
-		"test@test.subdomain.com",
-		"test-testerson@testdoma.in",
-		"!#$%&'*+-/=?^_`{|}~@domain.com", // All valid special chars
+		"test@lists.stevens.edu", // Subdomains are valid
+		"test@gmail.com",
+		"someguy@stevens.edu",
+		"!#$%&'*+-/=?^_`{|}~@yahoo.com", // All valid special chars
 	}
 	for _, s := range validEmails {
-		isValid := IsValidEmail(s) == nil
-		assert.Truef(t, isValid, "Valid email detected as invalid: '%s'")
+		err := IsValidEmail(s)
+		assert.Truef(t, err == nil, "Valid email detected as invalid: '%s', err: '%s'", s, err)
 	}
 }
