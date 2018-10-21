@@ -188,7 +188,6 @@ func AuthMid() *jwt.GinJWTMiddleware {
 }
 
 // IsValidEmail checks an email string to be valid and with resolvable host
-// returns ErrorEmailNotValid or ErrorUnresolvableEmailHost
 func IsValidEmail(email string) error {
 
 	err := emailx.Validate(email)
