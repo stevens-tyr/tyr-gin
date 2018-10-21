@@ -3,7 +3,6 @@ module github.com/stevens-tyr/tyr-gin
 require (
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
 	github.com/appleboy/gofight v2.0.0+incompatible // indirect
-	github.com/badoux/checkmail v0.0.0-20180430153108-0755fe2dc241
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20180617171254-12df4a18567f
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
