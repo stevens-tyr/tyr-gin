@@ -5,6 +5,7 @@ import (
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
+	"github.com/goware/emailx"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -91,6 +92,18 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	if err = IsValidEmail(register.Email); err != nil {
+		msg := "Email is invalid"
+		if err == ErrorUnresolvableEmailHost {
+			msg = "Unable to resolve email host"
+		}
+		c.JSON(400, gin.H{
+			"status_code": 400,
+			"message":     msg,
+		})
+		return
+	}
+
 	var user User
 	if err = col.Find(bson.M{"email": register.Email}).One(&user); err != nil {
 		c.JSON(400, gin.H{
@@ -107,8 +120,6 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-
-	// TODO: email validation here
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(register.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -174,4 +185,20 @@ var authMiddleware = &jwt.GinJWTMiddleware{
 func AuthMid() *jwt.GinJWTMiddleware {
 
 	return authMiddleware
+}
+
+// IsValidEmail checks an email string to be valid and with resolvable host
+func IsValidEmail(email string) error {
+
+	err := emailx.Validate(email)
+	if err != nil {
+		if err == emailx.ErrInvalidFormat {
+			return ErrorEmailNotValid
+		}
+		if err == emailx.ErrUnresolvableHost {
+			return ErrorUnresolvableEmailHost
+		}
+		return err
+	}
+	return nil
 }

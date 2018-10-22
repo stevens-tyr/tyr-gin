@@ -30,6 +30,10 @@ const (
 
 // Errors
 var (
+	// ErrorEmailNotValid an error to throw when an email format is not valid
+	ErrorEmailNotValid = errors.New("EMAIL NOT VALID")
+	// ErrorUnresolvedEmailHost an error to throw when the email host is unresolvable
+	ErrorUnresolvableEmailHost = errors.New("EMAIL HOST UNRESOLVABLE")
 	// UserNotFoundError an error to throw for when a User is not found.
 	ErrorUserNotFound = errors.New("USER NOT FOUND")
 	// IncorrectPasswordError an error to throw for when an inccorect passowrd is entered.
