@@ -67,3 +67,17 @@ func (m MongoRPLStatusChecker) CheckStatus(name string) StatusList {
 
 	return StatusList{StatusList: []Status{result}}
 }
+
+var (
+	checkSession, _          = GetSession()
+	MongoTyrRSStatusEndpoint = StatusEndpoint{
+		Name:          "Mongo Tyr Replica Set Check",
+		Slug:          "mongo-replica-set",
+		Type:          "internal",
+		IsTraversable: false,
+		StatusCheck: MongoRPLStatusChecker{
+			RPL: checkSession,
+		},
+		TraverseCheck: nil,
+	}
+)

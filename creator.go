@@ -75,6 +75,18 @@ func SetupRouter() *gin.Engine {
 		NewRoute(Register, "register", false, POST),
 	}
 
+	router.GET(
+		"/status/:slug",
+		HealthPointHandler(
+			[]StatusEndpoint{
+				MongoTyrRSStatusEndpoint,
+			},
+			"./mongo_health/about.json",
+			"./mongo_health/version.txt",
+			make(map[string]interface{}),
+		),
+	)
+
 	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
 
 	router.NoRoute(notFound)

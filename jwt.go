@@ -163,21 +163,21 @@ func Unauthorized(c *gin.Context, code int, message string) {
 }
 
 var authMiddleware = &jwt.GinJWTMiddleware{
-	Realm:         "localhost:5555",
-	Key:           []byte("tyr makes you tear"),
-	Timeout:       time.Hour,
-	MaxRefresh:    time.Hour * 24,
-	Authenticator: Authenticator,
-	Authorizator:  Authorizator,
-	Unauthorized:  Unauthorized,
-	TokenLookup:   "header:Authorization",
-	TokenHeadName: "Bearer",
-	TimeFunc:      time.Now,
-	SendCookie:    true,
-	SecureCookie:  false,
-	//CookieHTTPOnly: true,
-	//CookieDomain:   "localhost:5555",
-	//CookieName:     "token",
+	Realm:          "localhost:5555",
+	Key:            []byte("tyr makes you tear"),
+	Timeout:        time.Hour,
+	MaxRefresh:     time.Hour * 24,
+	Authenticator:  Authenticator,
+	Authorizator:   Authorizator,
+	Unauthorized:   Unauthorized,
+	TokenLookup:    "header:Authorization",
+	TokenHeadName:  "Bearer",
+	TimeFunc:       time.Now,
+	SendCookie:     true,
+	SecureCookie:   false,
+	CookieHTTPOnly: true,
+	CookieDomain:   "localhost:5555",
+	CookieName:     "token",
 }
 
 // AuthMid returns a pre-configured instance of of the jwt auth middleware
