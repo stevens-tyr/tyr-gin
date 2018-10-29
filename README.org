@@ -7,6 +7,15 @@ need to re-implement features. Such as jwt functions, logging and etc.
 1. Logging
 2. JWT
 3. Easy way to add endpoints.
+** Setup the Environment
+The following environmental variables are used
+#+begin_src
+MONGO_URI: <URI OF MongoDB>
+DB_NAME: <Name of Database to use>
+LOG_FILE: <Name of log file (log.json by default)>
+JWT_SECRET: <Secret used for JWT encryption>
+JWT_REALM: <Realm for JWT (different for prod/dev)>
+#+end_src
 ** Contributing
 1. Clone the repository locally, and create a new branch.
 2. Run *go get*.
@@ -14,6 +23,3 @@ need to re-implement features. Such as jwt functions, logging and etc.
 4. Make your changes.
 5. Run make all to fmt, lint, and test code.
 6. Make a merge request.
-** Todo
-1. Add Implementation of jwt.
-2. Add mongodb connection.

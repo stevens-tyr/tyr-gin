@@ -8,9 +8,9 @@ import (
 	mgo "gopkg.in/mgo.v2"
 )
 
-// GetSession returns a mgo session. Uses MANGO_URI env variable.
+// GetSession returns a mgo session. Uses MONGO_URI env variable.
 func GetSession() (*mgo.Session, error) {
-	session, err := mgo.Dial(os.Getenv("MANGO_URI"))
+	session, err := mgo.Dial(os.Getenv("MONGO_URI"))
 
 	return session, err
 }

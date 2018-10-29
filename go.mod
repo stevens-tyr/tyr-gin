@@ -25,7 +25,7 @@ require (
 	github.com/ugorji/go/codec v0.0.0-20180920200043-2c86ab75771c // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
-	golang.org/x/crypto v0.0.0-20181012144002-a92615f3c490
+	golang.org/x/crypto v0.0.0-20181029103014-dab2b1051b5d
 	golang.org/x/lint v0.0.0-20181011164241-5906bd5c48cd // indirect
 	golang.org/x/net v0.0.0-20180921000356-2f5d2388922f // indirect
 	golang.org/x/sys v0.0.0-20180924142050-c01370cb5c9b // indirect
