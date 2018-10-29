@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/goware/emailx"
 	"golang.org/x/crypto/bcrypt"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -71,6 +72,10 @@ func Authorizator(d interface{}, c *gin.Context) bool {
 func Register(c *gin.Context) {
 	var register RegisterForm
 	if err := c.ShouldBindJSON(&register); err != nil {
+		c.JSON(400, gin.H{
+			"status_code": 400,
+			"message":     "Incorrect json format.",
+		})
 		return
 	}
 
@@ -106,7 +111,7 @@ func Register(c *gin.Context) {
 	}
 
 	var user User
-	if err = col.Find(bson.M{"email": register.Email}).One(&user); err != nil {
+	if err = col.Find(bson.M{"email": register.Email}).One(&user); err != mgo.ErrNotFound {
 		c.JSON(400, gin.H{
 			"status_code": 400,
 			"message":     "Email is taken.",
