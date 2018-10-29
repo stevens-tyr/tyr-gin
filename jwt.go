@@ -1,6 +1,7 @@
 package tyrgin
 
 import (
+	"os"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt"
@@ -22,7 +23,7 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 		return "Can not get Mongo Session.", ErrorMongoSessionFailure
 	}
 
-	db := GetDataBase("tyr", s)
+	db := GetDataBase(os.Getenv("DB_NAME"), s)
 	col, err := SafeGetCollection("users", db)
 	if err != nil {
 		return "Mongo Collection does not exist.", ErrorMongoCollectionFailure
@@ -52,7 +53,7 @@ func Authorizator(d interface{}, c *gin.Context) bool {
 		return false
 	}
 
-	db := GetDataBase("tyr", s)
+	db := GetDataBase(os.Getenv("DB_NAME"), s)
 	col, err := SafeGetCollection("users", db)
 	if err != nil {
 		return false
@@ -82,7 +83,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	db := GetDataBase("tyr", s)
+	db := GetDataBase(os.Getenv("DB_NAME"), s)
 	col, err := SafeGetCollection("users", db)
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -163,8 +164,8 @@ func Unauthorized(c *gin.Context, code int, message string) {
 }
 
 var authMiddleware = &jwt.GinJWTMiddleware{
-	Realm:         "localhost:5555",
-	Key:           []byte("tyr makes you tear"),
+	Realm:         os.Getenv("JWT_REALM"),
+	Key:           []byte(os.Getenv("JWT_SECRET")),
 	Timeout:       time.Hour,
 	MaxRefresh:    time.Hour * 24,
 	Authenticator: Authenticator,
