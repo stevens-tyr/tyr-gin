@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	mgo "gopkg.in/mgo.v2"
+	bson "gopkg.in/mgo.v2/bson"
 )
 
 // Creator Types/Structs
@@ -219,17 +220,77 @@ type (
 	RegisterForm struct {
 		Email                string `bson:"email" json:"email" binding:"required"`
 		Password             string `bson:"password" json:"password" binding:"required"`
-		PasswordConfirmation string `bson:"password_confirmation" json:"password_confirmation" binding:"required"`
-		First                string `bson:"first_name" json:"first_name" binding:"required"`
-		Last                 string `bson:"last_name" json:"last_name" binding:"required"`
+		PasswordConfirmation string `bson:"passwordConfirmation" json:"passwordConfirmation" binding:"required"`
+		First                string `bson:"firstName" json:"firstName" binding:"required"`
+		Last                 string `bson:"lastName" json:"lastName" binding:"required"`
+	}
+
+	// facingTests struct to store the number of tests for private and public facing tests.
+	facingTests struct {
+		Pass int `bson:"pass" json:"pass" binding:"required"`
+		Fail int `bson:"fail" json:"fail" binding:"required"`
+	}
+
+	// cases struct to store tests/failed passed for admin/student
+	cases struct {
+		StudentFacing facingTests `bson:"studentFacing" json:"studentFacing" binding:"required"`
+		AdminFacing   facingTests `bson:"adminFacing" json:"adminFacing" binding:"required"`
+	}
+
+	// Submission struct the struct to represent a submission to an page.
+	Submission struct {
+		ID             bson.ObjectId       `bson:"_id" json:"id" binding:"required"`
+		UserID         bson.ObjectId       `bson:"userID" json:"userID" binding:"required"`
+		AttemptNumber  int                 `bson:"attemptNumber" json:"attemptNumber" binding:"required"`
+		SubmissionDate bson.MongoTimestamp `bson:"submissionDate" json:"submissionDate" binding:"required"`
+		File           string              `bson:"file" json:"file" binding:"required"`
+		ErrorTesting   bool                `bson:"errorTesting" json:"errorTesting" binding:"required"`
+		Cases          cases               `bson:"cases" json:"cases" binding:"required"`
+	}
+
+	// testScripts struct to represent filenames on gcp storage of scripts.
+	testScripts struct {
+		StudentFacing string `bson:"studentFacing" json:"studentFacing" binding:"required"`
+		AdminFacing   string `bson:"adminFacing" json:"adminFacing" binding:"required"`
+	}
+
+	// Assignment struct to store information about an assignment.
+	Assignment struct {
+		ID              bson.ObjectId       `bson:"_id" json:"id" binding:"required"`
+		Name            string              `bson:"name" json:"name" binding:"required"`
+		NumAttempts     int                 `bson:"numAttempts" json:"numAttempts" binding:"required"`
+		Description     string              `bson:"description" json:"description" binding:"required"`
+		SupportingFiles string              `bson:"supportingFiles" json:"supportingFiles" binding:"required"`
+		DueDate         bson.MongoTimestamp `bson:"dueDate" json:"dueDate" binding:"required"`
+		Published       bool                `bson:"published" json:"published" binding:"required"`
+		TestScripts     testScripts         `bson:"testScripts" json:"testScripts" binding:"required"`
+		Submissions     []bson.ObjectId     `bson:"submissions" json:"submissions" binding:"required"`
+	}
+
+	// Course struct ot store information about a course.
+	Course struct {
+		ID          bson.ObjectId   `bson:"_id" json:"id" binding:"required"`
+		Department  string          `bson:"department" json:"department" binding:"required"`
+		Number      int             `bson:"number" json:"number" binding:"required"`
+		Section     string          `bson:"section" json:"section" binding:"required"`
+		Professors  []bson.ObjectId `bson:"professors" json:"professors" binding:"required"`
+		Assistants  []bson.ObjectId `bson:"assistants" json:"assitants" binding:"required"`
+		Students    []bson.ObjectId `bson:"students" json:"students" binding:"required"`
+		Assignments []bson.ObjectId `bson:"assignments" json:"assignments" binding:"required"`
+	}
+
+	enrolledCourse struct {
+		CourseID       bson.ObjectId `bson:"courseID" json:"courseID" binding:"required"`
+		EnrollmentType string        `bson:"enrollmentType" json:"enrollmentType" binding:"required"`
 	}
 
 	// User a default User struct to represent a User in Tyr.
 	User struct {
-		Email    string   `bson:"email" json:"email" binding:"required"`
-		Password []byte   `bson:"password" json:"password" binding:"required"`
-		First    string   `bson:"first_name" json:"first_name" binding:"required"`
-		Last     string   `bson:"last_name" json:"last_name" binding:"required"`
-		Roles    []string `bson:"roles" json:"roles" binding:"required"`
+		ID              bson.ObjectId    `bson:"_id,omitempty" json:"id" biding:"required"`
+		Email           string           `bson:"email" json:"email" binding:"required"`
+		Password        []byte           `bson:"password" json:"password" binding:"required"`
+		First           string           `bson:"firstName" json:"first_name" binding:"required"`
+		Last            string           `bson:"lastName" json:"last_name" binding:"required"`
+		EnrolledCourses []enrolledCourse `bson:"enrolledCourses" json:"enrolledCourses" binding:"required"`
 	}
 )

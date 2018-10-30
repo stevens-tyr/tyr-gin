@@ -1,16 +1,59 @@
 package tyrgin
 
 import (
+	"fmt"
 	"os"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/goware/emailx"
-	"golang.org/x/crypto/bcrypt"
+	godotenv "github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
+	bcrypt "golang.org/x/crypto/bcrypt"
 	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	bson "gopkg.in/mgo.v2/bson"
 )
+
+var authMiddleware *jwt.GinJWTMiddleware
+
+func init() {
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "dev"
+	}
+
+	if env == "dev" {
+		if err := godotenv.Load(".dev.env"); err != nil {
+			fmt.Println("wtf")
+			log.Fatal("Could not load .dev.env.")
+		}
+	} else {
+		if prodErr := godotenv.Load(); prodErr != nil {
+			fmt.Println("wtf")
+			log.Fatal("Could not load .env.")
+		}
+	}
+
+	authMiddleware = &jwt.GinJWTMiddleware{
+		Realm:         os.Getenv("JWT_REALM"),
+		Key:           []byte(os.Getenv("JWT_SECRET")),
+		Timeout:       time.Hour,
+		MaxRefresh:    time.Hour * 24,
+		Authenticator: Authenticator,
+		Authorizator:  Authorizator,
+		PayloadFunc:   PayloadFunc,
+		Unauthorized:  Unauthorized,
+		TokenLookup:   "header:Authorization",
+		TokenHeadName: "Bearer",
+		TimeFunc:      time.Now,
+		SendCookie:    true,
+		SecureCookie:  false,
+		//CookieHTTPOnly: true,
+		//CookieDomain: "localhost:5555",
+		//CookieName:   "token",
+	}
+}
 
 // Authenticator a default function for a gin jwt, that authenticates a user.
 func Authenticator(c *gin.Context) (interface{}, error) {
@@ -39,31 +82,16 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 		return "Incorrect password", ErrorIncorrectPassword
 	}
 
-	return "Success", nil
+	return user, nil
 }
 
 // Authorizator a default function for a gin jwt, that authorizes a user.
 func Authorizator(d interface{}, c *gin.Context) bool {
-	var email Email
-	if err := c.ShouldBindJSON(&email); err != nil {
-		return false
-	}
+	//claims := jwt.ExtractClaims(c)
 
-	s, err := GetSession()
-	if err != nil {
-		return false
-	}
-
-	db := GetDataBase(os.Getenv("DB_NAME"), s)
-	col, err := SafeGetCollection("users", db)
-	if err != nil {
-		return false
-	}
-
-	var user User
-	if err = col.Find(bson.M{"email": email.Email}).One(&user); err != nil {
-		return false
-	}
+	// todo in future check
+	// look at route see if what part of course/assignment they are accessing
+	// check if they have permission claims["courses"] slice of enrolledCourse
 
 	return true
 }
@@ -137,11 +165,11 @@ func Register(c *gin.Context) {
 	}
 
 	user = User{
-		Email:    register.Email,
-		Password: hash,
-		First:    register.First,
-		Last:     register.Last,
-		Roles:    make([]string, 0),
+		Email:           register.Email,
+		Password:        hash,
+		First:           register.First,
+		Last:            register.Last,
+		EnrolledCourses: make([]enrolledCourse, 0),
 	}
 
 	err = col.Insert(&user)
@@ -160,30 +188,22 @@ func Register(c *gin.Context) {
 
 }
 
+// PayloadFunc uses the User's courses as jwt claims.
+func PayloadFunc(data interface{}) jwt.MapClaims {
+	switch data.(type) {
+	case User:
+		return jwt.MapClaims{"courses": data.(User).EnrolledCourses}
+	default:
+		return jwt.MapClaims{}
+	}
+}
+
 // Unauthorized a default jwt gin function, called when authentication is failed.
 func Unauthorized(c *gin.Context, code int, message string) {
 	c.JSON(code, gin.H{
 		"status_code": code,
 		"message":     message,
 	})
-}
-
-var authMiddleware = &jwt.GinJWTMiddleware{
-	Realm:         os.Getenv("JWT_REALM"),
-	Key:           []byte(os.Getenv("JWT_SECRET")),
-	Timeout:       time.Hour,
-	MaxRefresh:    time.Hour * 24,
-	Authenticator: Authenticator,
-	Authorizator:  Authorizator,
-	Unauthorized:  Unauthorized,
-	TokenLookup:   "header:Authorization",
-	TokenHeadName: "Bearer",
-	TimeFunc:      time.Now,
-	SendCookie:    true,
-	SecureCookie:  false,
-	//CookieHTTPOnly: true,
-	//CookieDomain:   "localhost:5555",
-	//CookieName:     "token",
 }
 
 // AuthMid returns a pre-configured instance of of the jwt auth middleware
