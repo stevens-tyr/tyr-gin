@@ -8,14 +8,17 @@ need to re-implement features. Such as jwt functions, logging and etc.
 2. JWT
 3. Easy way to add endpoints.
 ** Setup the Environment
-The following environmental variables are used
+The following environmental variables are used:
 #+begin_src
-MONGO_URI: <URI OF MongoDB>
-DB_NAME: <Name of Database to use>
-LOG_FILE: <Name of log file (log.json by default)>
-JWT_SECRET: <Secret used for JWT encryption>
-JWT_REALM: <Realm for JWT (different for prod/dev)>
+MONGO_URI=<URI OF MongoDB>
+DB_NAME=<Name of Database to use>
+LOG_FILE=<Name of log file (log.json by default)>
+JWT_SECRET=<Secret used for JWT encryption>
+JWT_REALM=<Realm for JWT (different for prod/dev)>
 #+end_src
+Within this repo, there is an example .env file that is used for testing purposes,
+when using this package, place a .env file within the root folder where you setup
+the router.
 ** Contributing
 1. Clone the repository locally, and create a new branch.
 2. Run *go get*.

@@ -1,7 +1,6 @@
 package tyrgin
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -20,18 +19,13 @@ var authMiddleware *jwt.GinJWTMiddleware
 func init() {
 	env := os.Getenv("ENV")
 	if env == "" {
+		os.Setenv("ENV", "dev")
 		env = "dev"
 	}
 
 	if env == "dev" {
-		if err := godotenv.Load(".dev.env"); err != nil {
-			fmt.Println("wtf")
-			log.Fatal("Could not load .dev.env.")
-		}
-	} else {
-		if prodErr := godotenv.Load(); prodErr != nil {
-			fmt.Println("wtf")
-			log.Fatal("Could not load .env.")
+		if err := godotenv.Load(); err != nil {
+			log.Fatal("Could not load .env file.")
 		}
 	}
 
