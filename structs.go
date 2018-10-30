@@ -225,16 +225,16 @@ type (
 		Last                 string `bson:"lastName" json:"lastName" binding:"required"`
 	}
 
-	// facingTests struct to store the number of tests for private and public facing tests.
-	facingTests struct {
+	// FacingTests struct to store the number of tests for private and public facing tests.
+	FacingTests struct {
 		Pass int `bson:"pass" json:"pass" binding:"required"`
 		Fail int `bson:"fail" json:"fail" binding:"required"`
 	}
 
-	// cases struct to store tests/failed passed for admin/student
-	cases struct {
-		StudentFacing facingTests `bson:"studentFacing" json:"studentFacing" binding:"required"`
-		AdminFacing   facingTests `bson:"adminFacing" json:"adminFacing" binding:"required"`
+	// Cases struct to store tests/failed passed for admin/student
+	Cases struct {
+		StudentFacing FacingTests `bson:"studentFacing" json:"studentFacing" binding:"required"`
+		AdminFacing   FacingTests `bson:"adminFacing" json:"adminFacing" binding:"required"`
 	}
 
 	// Submission struct the struct to represent a submission to an page.
@@ -245,11 +245,11 @@ type (
 		SubmissionDate bson.MongoTimestamp `bson:"submissionDate" json:"submissionDate" binding:"required"`
 		File           string              `bson:"file" json:"file" binding:"required"`
 		ErrorTesting   bool                `bson:"errorTesting" json:"errorTesting" binding:"required"`
-		Cases          cases               `bson:"cases" json:"cases" binding:"required"`
+		Cases          Cases               `bson:"cases" json:"cases" binding:"required"`
 	}
 
-	// testScripts struct to represent filenames on gcp storage of scripts.
-	testScripts struct {
+	// TestScripts struct to represent filenames on gcp storage of scripts.
+	TestScripts struct {
 		StudentFacing string `bson:"studentFacing" json:"studentFacing" binding:"required"`
 		AdminFacing   string `bson:"adminFacing" json:"adminFacing" binding:"required"`
 	}
@@ -263,7 +263,7 @@ type (
 		SupportingFiles string              `bson:"supportingFiles" json:"supportingFiles" binding:"required"`
 		DueDate         bson.MongoTimestamp `bson:"dueDate" json:"dueDate" binding:"required"`
 		Published       bool                `bson:"published" json:"published" binding:"required"`
-		TestScripts     testScripts         `bson:"testScripts" json:"testScripts" binding:"required"`
+		TestScripts     TestScripts         `bson:"testScripts" json:"testScripts" binding:"required"`
 		Submissions     []bson.ObjectId     `bson:"submissions" json:"submissions" binding:"required"`
 	}
 
@@ -279,7 +279,8 @@ type (
 		Assignments []bson.ObjectId `bson:"assignments" json:"assignments" binding:"required"`
 	}
 
-	enrolledCourse struct {
+	// EnrolledCourse struct keeps track of a user's course and enrollment type
+	EnrolledCourse struct {
 		CourseID       bson.ObjectId `bson:"courseID" json:"courseID" binding:"required"`
 		EnrollmentType string        `bson:"enrollmentType" json:"enrollmentType" binding:"required"`
 	}
@@ -291,6 +292,6 @@ type (
 		Password        []byte           `bson:"password" json:"password" binding:"required"`
 		First           string           `bson:"firstName" json:"first_name" binding:"required"`
 		Last            string           `bson:"lastName" json:"last_name" binding:"required"`
-		EnrolledCourses []enrolledCourse `bson:"enrolledCourses" json:"enrolledCourses" binding:"required"`
+		EnrolledCourses []EnrolledCourse `bson:"enrolledCourses" json:"enrolledCourses" binding:"required"`
 	}
 )

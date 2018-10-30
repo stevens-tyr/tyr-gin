@@ -169,7 +169,7 @@ func Register(c *gin.Context) {
 		Password:        hash,
 		First:           register.First,
 		Last:            register.Last,
-		EnrolledCourses: make([]enrolledCourse, 0),
+		EnrolledCourses: make([]EnrolledCourse, 0),
 	}
 
 	err = col.Insert(&user)
