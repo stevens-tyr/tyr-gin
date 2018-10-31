@@ -157,6 +157,7 @@ func TestNotFound(t *testing.T) {
 	}
 
 	router := SetupRouter()
+	router.NoRoute(NotFound)
 
 	resp := performRequest(router, "GET", "/", nil)
 	assert.Equal(t, http.StatusNotFound, resp.Code)

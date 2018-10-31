@@ -1,9 +1,11 @@
 package tyrgin
 
 import (
+	"fmt"
 	"net/http"
 
 	jwt "github.com/appleboy/gin-jwt"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -51,8 +53,9 @@ func AddRoutes(router *gin.Engine, jwt *jwt.GinJWTMiddleware, version, api strin
 
 }
 
-// notFound a general 404 error message.
-func notFound(c *gin.Context) {
+// NotFound a general 404 error message.
+func NotFound(c *gin.Context) {
+	fmt.Println(c.Request.URL.Path[1:])
 	c.JSON(
 		http.StatusNotFound,
 		gin.H{
@@ -78,7 +81,10 @@ func SetupRouter() *gin.Engine {
 
 	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
 
-	router.NoRoute(notFound)
-
 	return router
+}
+
+// ServeReact is a function to serve react from a(n) service.
+func ServeReact(r *gin.Engine) {
+	r.Use(static.Serve("/", static.LocalFile("./static", true)))
 }

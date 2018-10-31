@@ -6,6 +6,7 @@ require (
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20180617171254-12df4a18567f
 	github.com/buger/jsonparser v0.0.0-20181023193515-52c6e1462ebd // indirect
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
+	github.com/gin-contrib/static v0.0.0-20180827025113-8cbcdde04781
 	github.com/gin-gonic/gin v1.3.0
 	github.com/goware/emailx v0.0.0-20171023230436-0bae9679d4e3
 	github.com/joho/godotenv v1.3.0
