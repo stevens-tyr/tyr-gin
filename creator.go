@@ -2,12 +2,29 @@ package tyrgin
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	godotenv "github.com/joho/godotenv"
 )
+
+func init() {
+	env := os.Getenv("ENV")
+	if env == "" {
+		os.Setenv("ENV", "dev")
+		env = "dev"
+	}
+
+	if env == "dev" {
+		if err := godotenv.Load(); err != nil {
+			log.Fatal("Could not load .env file.")
+		}
+	}
+}
 
 // action takes the APIAction method and creates a gin route of that type.
 // Also makes the route private if it labeled as private in the apiaction.
@@ -72,14 +89,6 @@ func SetupRouter() *gin.Engine {
 
 	router.Use(Logger())
 	router.Use(gin.Recovery())
-
-	var authEndpoints = []APIAction{
-		NewRoute(authMiddleware.LoginHandler, "login", false, POST),
-		NewRoute(authMiddleware.RefreshHandler, "refresh_token", false, GET),
-		NewRoute(Register, "register", false, POST),
-	}
-
-	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
 
 	return router
 }

@@ -170,9 +170,8 @@ func TestNotFound(t *testing.T) {
 
 func TestCreatorRoutes(t *testing.T) {
 	router := SetupRouter()
-	jwt := AuthMid()
 
-	AddRoutes(router, jwt, "1", "tester", testEndpoints)
+	AddRoutes(router, nil, "1", "tester", testEndpoints)
 	var response respTest
 
 	// Test Get

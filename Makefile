@@ -20,4 +20,5 @@ test:
 clean:
 	rm -f log.json
 	rm -f *~
-all: fmt lint test
+	rm -f \#*\#
+all: fmt lint test clean
