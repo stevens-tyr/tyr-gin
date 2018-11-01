@@ -157,6 +157,7 @@ func TestNotFound(t *testing.T) {
 	}
 
 	router := SetupRouter()
+	router.NoRoute(NotFound)
 
 	resp := performRequest(router, "GET", "/", nil)
 	assert.Equal(t, http.StatusNotFound, resp.Code)
@@ -169,9 +170,8 @@ func TestNotFound(t *testing.T) {
 
 func TestCreatorRoutes(t *testing.T) {
 	router := SetupRouter()
-	jwt := AuthMid()
 
-	AddRoutes(router, jwt, "1", "tester", testEndpoints)
+	AddRoutes(router, nil, "1", "tester", testEndpoints)
 	var response respTest
 
 	// Test Get

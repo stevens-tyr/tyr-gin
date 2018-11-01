@@ -1,11 +1,49 @@
 package tyrgin
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	jwt "github.com/appleboy/gin-jwt"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	godotenv "github.com/joho/godotenv"
 )
+
+// MongoTyrRSStatusEndpoint is for healthcheck api to know about mongo replica sets.
+var MongoTyrRSStatusEndpoint StatusEndpoint
+
+func init() {
+	env := os.Getenv("ENV")
+	if env == "" {
+		os.Setenv("ENV", "dev")
+		env = "dev"
+	}
+
+	if env == "dev" {
+		if err := godotenv.Load(); err != nil {
+			log.Fatal("Could not load .env file.")
+		}
+	}
+
+	checkSession, err := GetMongoSession()
+	if err != nil {
+		log.Fatal("Could not get Mongo connection")
+	}
+
+	MongoTyrRSStatusEndpoint = StatusEndpoint{
+		Name:          "Mongo Tyr Replica Set Check",
+		Slug:          "mongo",
+		Type:          "internal",
+		IsTraversable: false,
+		StatusCheck: MongoRPLStatusChecker{
+			RPL: checkSession,
+		},
+		TraverseCheck: nil,
+	}
+}
 
 // action takes the APIAction method and creates a gin route of that type.
 // Also makes the route private if it labeled as private in the apiaction.
@@ -51,8 +89,9 @@ func AddRoutes(router *gin.Engine, jwt *jwt.GinJWTMiddleware, version, api strin
 
 }
 
-// notFound a general 404 error message.
-func notFound(c *gin.Context) {
+// NotFound a general 404 error message.
+func NotFound(c *gin.Context) {
+	fmt.Println(c.Request.URL.Path[1:])
 	c.JSON(
 		http.StatusNotFound,
 		gin.H{
@@ -70,11 +109,6 @@ func SetupRouter() *gin.Engine {
 	router.Use(Logger())
 	router.Use(gin.Recovery())
 
-	var authEndpoints = []APIAction{
-		NewRoute(authMiddleware.LoginHandler, "login", false, POST),
-		NewRoute(Register, "register", false, POST),
-	}
-
 	router.GET(
 		"/status/:slug",
 		HealthPointHandler(
@@ -87,9 +121,10 @@ func SetupRouter() *gin.Engine {
 		),
 	)
 
-	AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
-
-	router.NoRoute(notFound)
-
 	return router
+}
+
+// ServeReact is a function to serve react from a(n) service.
+func ServeReact(r *gin.Engine) {
+	r.Use(static.Serve("/", static.LocalFile("./static", true)))
 }

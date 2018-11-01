@@ -110,6 +110,17 @@ func Logger() gin.HandlerFunc {
 			bytesBody, err := ioutil.ReadAll(c.Request.Body)
 			ErrorLogger(err, "Failed to read Request Body.")
 			json.Unmarshal(bytesBody, &reqBody)
+
+			if _, ok := reqBody["email"]; ok {
+				delete(reqBody, "email")
+			}
+			if _, ok := reqBody["password"]; ok {
+				delete(reqBody, "password")
+			}
+			if _, ok := reqBody["passwordConfirmation"]; ok {
+				delete(reqBody, "passwordConfirmation")
+			}
+
 			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bytesBody))
 		}
 

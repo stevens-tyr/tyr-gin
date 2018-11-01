@@ -200,36 +200,3 @@ type bufferedWriter struct {
 	out    *bufio.Writer
 	Buffer bytes.Buffer
 }
-
-// JWT Types/Structs
-
-type (
-	// Email struct to get the email of a User.
-	Email struct {
-		Email string `bson:"email" json:"email" binding:"required"`
-	}
-
-	// Login struct a form to login a Tyr User.
-	Login struct {
-		Email    string `bson:"email" json:"email" binding:"required"`
-		Password string `bson:"password" json:"password" binding:"required"`
-	}
-
-	// RegisterForm struct a form for register a Tyr User.
-	RegisterForm struct {
-		Email                string `bson:"email" json:"email" binding:"required"`
-		Password             string `bson:"password" json:"password" binding:"required"`
-		PasswordConfirmation string `bson:"password_confirmation" json:"password_confirmation" binding:"required"`
-		First                string `bson:"first_name" json:"first_name" binding:"required"`
-		Last                 string `bson:"last_name" json:"last_name" binding:"required"`
-	}
-
-	// User a default User struct to represent a User in Tyr.
-	User struct {
-		Email    string   `bson:"email" json:"email" binding:"required"`
-		Password []byte   `bson:"password" json:"password" binding:"required"`
-		First    string   `bson:"first_name" json:"first_name" binding:"required"`
-		Last     string   `bson:"last_name" json:"last_name" binding:"required"`
-		Roles    []string `bson:"roles" json:"roles" binding:"required"`
-	}
-)
