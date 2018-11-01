@@ -90,14 +90,6 @@ func SetupRouter() *gin.Engine {
 	router.Use(Logger())
 	router.Use(gin.Recovery())
 
-	// var authEndpoints = []APIAction{
-	// 	NewRoute(authMiddleware.LoginHandler, "login", false, POST),
-	// 	NewRoute(authMiddleware.RefreshHandler, "refresh_token", false, GET),
-	// 	NewRoute(Register, "register", false, POST),
-	// }
-
-	// AddRoutes(router, authMiddleware, "1", "auth", authEndpoints)
-
 	return router
 }
 
