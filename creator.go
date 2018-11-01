@@ -30,7 +30,7 @@ func init() {
 
 	checkSession, err := GetMongoSession()
 	if err != nil {
-		log.Fatal("Could not get Mongo connection")
+		log.Println("Could not get Mongo connection")
 	}
 
 	MongoTyrRSStatusEndpoint = StatusEndpoint{
