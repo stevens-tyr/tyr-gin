@@ -12,6 +12,9 @@ import (
 	godotenv "github.com/joho/godotenv"
 )
 
+// MongoTyrRSStatusEndpoint is for healthcheck api to know about mongo replica sets.
+var MongoTyrRSStatusEndpoint StatusEndpoint
+
 func init() {
 	env := os.Getenv("ENV")
 	if env == "" {
@@ -23,6 +26,22 @@ func init() {
 		if err := godotenv.Load(); err != nil {
 			log.Fatal("Could not load .env file.")
 		}
+	}
+
+	checkSession, err := GetMongoSession()
+	if err != nil {
+		log.Println("Could not get Mongo connection")
+	}
+
+	MongoTyrRSStatusEndpoint = StatusEndpoint{
+		Name:          "Mongo Tyr Replica Set Check",
+		Slug:          "mongo",
+		Type:          "internal",
+		IsTraversable: false,
+		StatusCheck: MongoRPLStatusChecker{
+			RPL: checkSession,
+		},
+		TraverseCheck: nil,
 	}
 }
 
@@ -89,6 +108,18 @@ func SetupRouter() *gin.Engine {
 
 	router.Use(Logger())
 	router.Use(gin.Recovery())
+
+	router.GET(
+		"/status/:slug",
+		HealthPointHandler(
+			[]StatusEndpoint{
+				MongoTyrRSStatusEndpoint,
+			},
+			"./mongo_health/about.json",
+			"./mongo_health/version.txt",
+			make(map[string]interface{}),
+		),
+	)
 
 	return router
 }
