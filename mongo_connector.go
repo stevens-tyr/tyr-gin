@@ -65,7 +65,7 @@ func GetMongoCollectionCreate(c string, db *mgo.Database) (*mgo.Collection, erro
 
 	collection.Insert()
 
-	return nil, ErrorMongoCollectionFailure
+	return collection, nil
 }
 
 // CheckStatus here is of the struct for checking mongo replica set statuses.
