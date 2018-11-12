@@ -128,3 +128,14 @@ func SetupRouter() *gin.Engine {
 func ServeReact(r *gin.Engine) {
 	r.Use(static.Serve("/", static.LocalFile("./static", true)))
 }
+
+// ErrorHandler
+func ErrorHandler(err error, c *gin.Context, sc int, json interface{}) bool {
+	if err != nil {
+		c.Writer.Header().Add("Content-Type", "application/json+error")
+		c.AbortStatusWithJSON(sc, json)
+		return false
+	}
+
+	return true
+}
