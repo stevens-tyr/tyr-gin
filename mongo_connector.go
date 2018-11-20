@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mongodb/mongo-go-driver/mongo"
 	mgo "gopkg.in/mgo.v2"
 )
 
 // GetMongoSession returns a mgo session. Uses MONGO_URI env variable.
 func GetMongoSession() (*mgo.Session, error) {
-	session, err := mgo.Dial(os.Getenv("MONGO_URI"))
+	session, err := mongo.NewClient("mongodb://" + os.Getenv("MONGO_URI"))
 
 	return session, err
 }
