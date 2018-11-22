@@ -1,11 +1,18 @@
 package tyrgin
 
 import (
-	"context"
+	"bytes"
+	ctx "context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
+	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
 	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo/gridfs"
+	"github.com/mongodb/mongo-go-driver/options"
 )
 
 // GetMongoSession returns a mgo session. Uses MONGO_URI env variable.
@@ -15,7 +22,7 @@ func GetMongoSession() (*mongo.Client, error) {
 		return nil, err
 	}
 
-	err = session.Connect(context.TODO())
+	err = session.Connect(ctx.TODO())
 
 	return session, err
 }
@@ -27,7 +34,7 @@ func GetMongoDB(d string) (*mongo.Database, error) {
 		return nil, err
 	}
 
-	return session.DB(d), nil
+	return session.Database(d), nil
 }
 
 // GetMongoCollection takes a string and returns a mongo collection of that name.
@@ -38,13 +45,13 @@ func GetMongoCollection(c string, db *mongo.Database) *mongo.Collection {
 // SafeGetMongoCollection takes a string and returns a mongo collection of that name
 // only if it exists and returns an error if it does not.
 func SafeGetMongoCollection(c string, db *mongo.Database) (*mongo.Collection, error) {
-	cnames, err := db.ListCollections()
+	cnames, err := db.ListCollections(ctx.Background(), nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	defer cnames.Close(context.Backround())
+	defer cnames.Close(ctx.Background())
 
-	for cnames.Next(context.Background()) {
+	for cnames.Next(ctx.Background()) {
 		var name string
 		err = cnames.Decode(name)
 		if err != nil {
@@ -63,15 +70,15 @@ func SafeGetMongoCollection(c string, db *mongo.Database) (*mongo.Collection, er
 // GetMongoCollectionCreate takes a string and returns a mongo collection of that name.
 // Will create collection if it does not exist
 func GetMongoCollectionCreate(c string, db *mongo.Database) (*mongo.Collection, error) {
-	cnames, err := db.ListCollections(context.Backround())
+	cnames, err := db.ListCollections(ctx.Background(), nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	defer cnames.Close(context.Backround())
+	defer cnames.Close(ctx.Background())
 
 	collection := db.Collection(c)
 
-	for cnames.Next(context.Background()) {
+	for cnames.Next(ctx.Background()) {
 		var name string
 		err = cnames.Decode(name)
 		if err != nil {
@@ -83,15 +90,72 @@ func GetMongoCollectionCreate(c string, db *mongo.Database) (*mongo.Collection, 
 		}
 	}
 
-	collection.Insert()
+	collection.InsertOne(ctx.Background(), nil)
 
 	return collection, nil
+}
+
+// GetGridFSBucket returns a mongo gridfs bucket given a  name and chunk size in bytes for a bucket.
+func GetGridFSBucket(db *mongo.Database, name string, size int32) (*Bucket, error) {
+	bucketOptions := options.GridFSBucket()
+
+	bucketOptions.Name = &name
+	bucketOptions.ChunkSizeBytes = &size
+
+	fsbucket, err := gridfs.NewBucket(db, bucketOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	bucket := &Bucket{
+		Bucket:         fsbucket,
+		ChunkSizeBytes: &size,
+		Name:           &name,
+	}
+
+	return bucket, nil
+}
+
+// GridFSUploadFile  uploads a file to a Bucket given name of file and the data as a reader object.
+func (b *Bucket) GridFSUploadFile(filename string, file io.Reader) (*objectid.ObjectID, error) {
+	uploadStreamOptions := options.GridFSUpload()
+
+	uploadStreamOptions.ChunkSizeBytes = b.ChunkSizeBytes
+
+	fileID, err := b.Bucket.UploadFromStream(filename, file, uploadStreamOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	return &fileID, nil
+}
+
+// GridFSDownloadFile given a fileID downloads the file from the bucket.
+func (b *Bucket) GridFSDownloadFile(fileID *objectid.ObjectID) (bytes.Buffer, error) {
+	var fsStream bytes.Buffer
+
+	_, err := b.Bucket.DownloadToStream(*fileID, &fsStream)
+	if err != nil {
+		return fsStream, err
+	}
+
+	return fsStream, nil
+}
+
+// GridFSDeleteFile given a fileID deletes the file from the bucket.
+func (b *Bucket) GridFSDeleteFile(fileID *objectid.ObjectID) error {
+	err := b.Bucket.Delete(*fileID)
+
+	return err
 }
 
 // CheckStatus here is of the struct for checking mongo replica set statuses.
 func (m MongoRPLStatusChecker) CheckStatus(name string) StatusList {
 	var replResult MongoReplStatus
-	m.RPL.Run("replSetGetStatus", &replResult)
+	var cmd interface{}
+	cmd = bson.D{{"replSetGetStatus", 1}}
+	raw, _ := m.RPL.RunCommand(ctx.Background(), cmd)
+	json.Unmarshal(raw, &replResult)
 
 	var result Status
 	if replResult.OK == 0 {

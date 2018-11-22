@@ -6,7 +6,8 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
-	mgo "gopkg.in/mgo.v2"
+	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo/gridfs"
 )
 
 // Creator Types/Structs
@@ -188,7 +189,7 @@ type (
 
 	// MongoRPLStatusChecker struct for when we eventually add mongo.
 	MongoRPLStatusChecker struct {
-		RPL *mgo.Session
+		RPL *mongo.Database
 	}
 )
 
@@ -199,4 +200,13 @@ type bufferedWriter struct {
 	gin.ResponseWriter
 	out    *bufio.Writer
 	Buffer bytes.Buffer
+}
+
+// GridFS Types/Structs
+
+// Bucket struct contains the gridfs Bucket as well its its chunk size and name.
+type Bucket struct {
+	Bucket         *gridfs.Bucket
+	ChunkSizeBytes *int32
+	Name           *string
 }
