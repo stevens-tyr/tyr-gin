@@ -3,7 +3,7 @@ GO_FILES = $(wildcard *.go)
 FMT = $(GO)imports -w 
 LINT = $(GO)lint
 TEST = $(GO) test
-VET = $(GO) vet
+VET = $(GO) vet -composites=false
 GET = $(GO) get
 
 .PHONY: get fmt lint test all

@@ -28,7 +28,7 @@ func init() {
 		}
 	}
 
-	checkSession, err := GetMongoSession()
+	checkSession, err := GetMongoDB(os.Getenv("DB_NAME"))
 	if err != nil {
 		log.Println("Could not get Mongo connection")
 	}
@@ -115,8 +115,8 @@ func SetupRouter() *gin.Engine {
 			[]StatusEndpoint{
 				MongoTyrRSStatusEndpoint,
 			},
-			"./mongo_health/about.json",
-			"./mongo_health/version.txt",
+			"./about.json",
+			"./version.txt",
 			make(map[string]interface{}),
 		),
 	)
