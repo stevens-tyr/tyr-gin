@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"github.com/mongodb/mongo-go-driver/bson/ "
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/gridfs"
 	"github.com/mongodb/mongo-go-driver/options"
@@ -117,7 +117,7 @@ func GetGridFSBucket(db *mongo.Database, name string, size int32) (*Bucket, erro
 }
 
 // GridFSUploadFile  uploads a file to a Bucket given name of file and the data as a reader object.
-func (b *Bucket) GridFSUploadFile(fileID objectid.ObjectID, filename string, file io.Reader) error {
+func (b *Bucket) GridFSUploadFile(fileID primitive.ObjectID, filename string, file io.Reader) error {
 	uploadStreamOptions := options.GridFSUpload()
 
 	uploadStreamOptions.ChunkSizeBytes = b.ChunkSizeBytes
@@ -131,7 +131,7 @@ func (b *Bucket) GridFSUploadFile(fileID objectid.ObjectID, filename string, fil
 }
 
 // GridFSDownloadFile given a fileID downloads the file from the bucket.
-func (b *Bucket) GridFSDownloadFile(fileID objectid.ObjectID) (bytes.Buffer, error) {
+func (b *Bucket) GridFSDownloadFile(fileID primitive.ObjectID) (bytes.Buffer, error) {
 	var fsStream bytes.Buffer
 
 	_, err := b.Bucket.DownloadToStream(fileID, &fsStream)
@@ -143,7 +143,7 @@ func (b *Bucket) GridFSDownloadFile(fileID objectid.ObjectID) (bytes.Buffer, err
 }
 
 // GridFSDeleteFile given a fileID deletes the file from the bucket.
-func (b *Bucket) GridFSDeleteFile(fileID objectid.ObjectID) error {
+func (b *Bucket) GridFSDeleteFile(fileID primitive.ObjectID) error {
 	err := b.Bucket.Delete(fileID)
 
 	return err
