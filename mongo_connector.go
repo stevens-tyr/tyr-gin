@@ -154,7 +154,7 @@ func (m MongoRPLStatusChecker) CheckStatus(name string) StatusList {
 	var replResult MongoReplStatus
 	var cmd interface{}
 	cmd = bson.D{{"replSetGetStatus", 1}}
-	raw, _ := m.RPL.RunCommand(ctx.Background(), cmd)
+	raw := m.RPL.RunCommand(ctx.Background(), cmd)
 	json.Unmarshal(raw, &replResult)
 
 	var result Status
