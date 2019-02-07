@@ -134,7 +134,7 @@ func ErrorHandler(err error, c *gin.Context, sc int, json interface{}) {
 	if err != nil {
 		c.Writer.Header().Add("Content-Type", "application/json+error")
 		c.AbortWithStatusJSON(sc, json)
-		c.error(err)
+		c.Error(err)
 		return
 	}
 
