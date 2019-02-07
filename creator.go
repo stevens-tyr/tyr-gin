@@ -130,12 +130,13 @@ func ServeReact(r *gin.Engine) {
 }
 
 // ErrorHandler handles gin errors in a more clean way
-func ErrorHandler(err error, c *gin.Context, sc int, json interface{}) bool {
+func ErrorHandler(err error, c *gin.Context, sc int, json interface{}) {
 	if err != nil {
 		c.Writer.Header().Add("Content-Type", "application/json+error")
 		c.AbortWithStatusJSON(sc, json)
-		return false
+		c.error(err)
+		return
 	}
 
-	return true
+	return
 }
