@@ -47,11 +47,7 @@ func init() {
 
 // action takes the APIAction method and creates a gin route of that type.
 // Also makes the route private if it labeled as private in the apiaction.
-func (a *APIAction) action(route *gin.RouterGroup, jwt *jwt.GinJWTMiddleware) {
-	if a.Private {
-		route.Use(jwt.MiddlewareFunc())
-	}
-
+func (a *APIAction) action(route *gin.RouterGroup) {
 	switch a.Method {
 	case GET:
 		route.GET(a.Route, a.Func)
@@ -73,14 +69,17 @@ func (a *APIAction) action(route *gin.RouterGroup, jwt *jwt.GinJWTMiddleware) {
 
 // AddRoutes takes a gin server, gin jwt instance, version number as a string,
 // api endpoint name and a list of APIActions to add to it.
-func AddRoutes(router *gin.Engine, jwt *jwt.GinJWTMiddleware, version, api string, fns []APIAction) {
+func AddRoutes(router *gin.Engine, private bool, jwt *jwt.GinJWTMiddleware, version, api string, fns []APIAction) {
 	ver := router.Group("/api/v" + version)
 	{
 		route := ver.Group(api)
+		if private {
+			route.Use(jwt.MiddlewareFunc())
+		}
 		{
 
 			for _, fn := range fns {
-				fn.action(route, jwt)
+				fn.action(route)
 			}
 
 		}

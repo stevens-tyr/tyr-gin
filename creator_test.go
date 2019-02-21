@@ -119,11 +119,11 @@ func testPutFunc(c *gin.Context) {
 }
 
 var (
-	testGet    = NewRoute(testGetFunc, "hello", false, GET)
-	testDelete = NewRoute(testDeleteFunc, "hello", false, DELETE)
-	testPatch  = NewRoute(testPatchFunc, "hello", false, PATCH)
-	testPost   = NewRoute(testPostFunc, "hello", false, POST)
-	testPut    = NewRoute(testPutFunc, "hello", false, PUT)
+	testGet    = NewRoute(testGetFunc, "hello", GET)
+	testDelete = NewRoute(testDeleteFunc, "hello", DELETE)
+	testPatch  = NewRoute(testPatchFunc, "hello", PATCH)
+	testPost   = NewRoute(testPostFunc, "hello", POST)
+	testPut    = NewRoute(testPutFunc, "hello", PUT)
 )
 
 var testEndpoints = []APIAction{
@@ -171,7 +171,7 @@ func TestNotFound(t *testing.T) {
 func TestCreatorRoutes(t *testing.T) {
 	router := SetupRouter()
 
-	AddRoutes(router, nil, "1", "tester", testEndpoints)
+	AddRoutes(router, false, nil, "1", "tester", testEndpoints)
 	var response respTest
 
 	// Test Get
