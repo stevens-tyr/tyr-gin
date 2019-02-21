@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	jwt "github.com/appleboy/gin-jwt"
+	"github.com/appleboy/gin-jwt"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	godotenv "github.com/joho/godotenv"
@@ -49,7 +49,7 @@ func init() {
 // Also makes the route private if it labeled as private in the apiaction.
 func (a *APIAction) action(route *gin.RouterGroup, jwt *jwt.GinJWTMiddleware) {
 	if a.Private {
-		route.Use(jwt.MiddlewareFunc())
+		
 	}
 
 	switch a.Method {
@@ -108,6 +108,7 @@ func SetupRouter() *gin.Engine {
 
 	router.Use(Logger())
 	router.Use(gin.Recovery())
+	route.Use(jwt.MiddlewareFunc())
 
 	router.GET(
 		"/status/:slug",
