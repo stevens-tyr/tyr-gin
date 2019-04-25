@@ -53,7 +53,7 @@ func (a *APIAction) action(route *gin.RouterGroup) {
 		route.GET(a.Route, a.Func)
 		break
 	case DELETE:
-		route.DELETE(a.Route, a.Func)
+ 		route.DELETE(a.Route, a.Func)
 		break
 	case PATCH:
 		route.PATCH(a.Route, a.Func)
@@ -90,6 +90,10 @@ func AddRoutes(router *gin.Engine, private bool, jwt *jwt.GinJWTMiddleware, vers
 // NotFound a general 404 error message.
 func NotFound(c *gin.Context) {
 	fmt.Println(c.Request.URL.Path[1:])
+	if c.Writer.Status() == 404 {
+		return
+	}
+	
 	c.JSON(
 		http.StatusNotFound,
 		gin.H{
