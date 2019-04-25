@@ -3,7 +3,6 @@ package tyrgin
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/appleboy/gin-jwt"
@@ -53,7 +52,7 @@ func (a *APIAction) action(route *gin.RouterGroup) {
 		route.GET(a.Route, a.Func)
 		break
 	case DELETE:
- 		route.DELETE(a.Route, a.Func)
+		route.DELETE(a.Route, a.Func)
 		break
 	case PATCH:
 		route.PATCH(a.Route, a.Func)

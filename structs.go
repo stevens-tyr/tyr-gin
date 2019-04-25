@@ -47,18 +47,18 @@ var (
 
 // APIAction is the core of how you can easily add routes to the server.
 type APIAction struct {
-	Func    func(gin *gin.Context)
-	Route   string
-	Method  httpMethod
+	Func   func(gin *gin.Context)
+	Route  string
+	Method httpMethod
 }
 
 // NewRoute takes a function that takes gin context, endpoint, whether the route should be login protected, and method type.
 // This returns a pointer to a APIAction.
 func NewRoute(action func(c *gin.Context), endpoint string, method httpMethod) APIAction {
 	return APIAction{
-		Func:    action,
-		Route:   endpoint,
-		Method:  method,
+		Func:   action,
+		Route:  endpoint,
+		Method: method,
 	}
 }
 
