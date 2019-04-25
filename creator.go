@@ -90,17 +90,7 @@ func AddRoutes(router *gin.Engine, private bool, jwt *jwt.GinJWTMiddleware, vers
 // NotFound a general 404 error message.
 func NotFound(c *gin.Context) {
 	fmt.Println(c.Request.URL.Path[1:])
-	if c.Writer.Status() == 404 {
-		return
-	}
-	
-	c.JSON(
-		http.StatusNotFound,
-		gin.H{
-			"status_code": http.StatusNotFound,
-			"message":     NotFoundError,
-		},
-	)
+	c.File("./static/index.html")
 }
 
 // SetupRouter returns an instance to a *gin.Enginer that is has
