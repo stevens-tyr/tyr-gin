@@ -123,7 +123,7 @@ func HealthPointHandlerFunc(statusEndpoints []StatusEndpoint, aboutFilePath, ver
 				io.WriteString(w, SerializeStatusList(StatusList{
 					StatusList: []Status{
 						{
-							Description: "Unknow Status endpoint",
+							Description: "Unknown Status endpoint",
 							Result:      CRITICAL,
 							Details:     fmt.Sprintf("Status endpoint does not exist: %s", r.URL.Path),
 						},
